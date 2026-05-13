@@ -26,3 +26,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+venv/
+.venv/
+lambda_function_payload.zip
+attention_mlp_best.pth
+nids-pfe-key.pem

@@ -1,0 +1,110 @@
+---
+- name: Configure Cyberrange Infrastructure
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+- name: Setup Victim Node
+  hosts: victim
+  become: yes
+  tasks:
+    - name: Ensure Apache is running
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+
+- name: Setup IDS Node
+  hosts: ids
+  become: yes
+  vars:
+    nids_path: "/opt/nids"
+    vni: 100
+  tasks:
+    - name: Cleanup old VXLAN interface
+      shell: ip link delete vxlan0 || true
+      ignore_errors: yes
+
+    - name: Install system dependencies
+      apt:
+        name:
+          - python3-pip
+          - python3-dev
+          - libpcap-dev
+          - tcpdump
+        state: present
+
+    - name: Create NIDS directory
+      file:
+        path: "{{ nids_path }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy project files
+      copy:
+        src: "../{{ item }}"
+        dest: "{{ nids_path }}/{{ item }}"
+      with_items:
+        - models.py
+        - prepocessor.py
+        - attention_mlp_best.pth
+
+    - name: Copy IDS engine
+      copy:
+        src: "ids_engine.py"
+        dest: "{{ nids_path }}/ids_engine.py"
+
+    - name: Install Python libraries
+      pip:
+        name:
+          - torch
+          - nfstream
+          - boto3
+          - pandas
+          - numpy
+          - scapy
+
+    - name: Configure VXLAN interface for Traffic Mirroring
+      shell: |
+        ip link add vxlan0 type vxlan id {{ vni }} dev ens5 dstport 4789 || true
+        ip link set vxlan0 up || true
+      ignore_errors: yes
+
+    - name: Create Systemd service for IDS Engine
+      copy:
+        dest: /etc/systemd/system/nids.service
+        content: |
+          [Unit]
+          Description=NIDS AI Inference Engine
+          After=network.target
+
+          [Service]
+          Type=simple
+          WorkingDirectory={{ nids_path }}
+          ExecStart=/usr/bin/python3 {{ nids_path }}/ids_engine.py
+          Restart=always
+          Environment="SQS_QUEUE_URL={{ hostvars['localhost']['sqs_queue_url'] | default('') }}"
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Start NIDS service
+      systemd:
+        name: nids
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+
+- name: Setup SOC Node
+  hosts: soc
+  become: yes
+  tasks:
+    - name: Ensure Grafana is running
+      service:
+        name: grafana-server
+        state: started
+        enabled: yes

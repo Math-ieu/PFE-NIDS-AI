@@ -1,0 +1,70 @@
+---
+- name: Deploy Custom SOC Dashboard
+  hosts: soc
+  become: yes
+  vars:
+    soc_path: "/opt/soc_dashboard"
+  tasks:
+    - name: Install Nginx and Python dependencies
+      apt:
+        name:
+          - nginx
+          - python3-pip
+        state: present
+
+    - name: Create SOC directory
+      file:
+        path: "{{ soc_path }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy Backend files
+      copy:
+        src: "../soc_dashboard/backend/main.py"
+        dest: "{{ soc_path }}/main.py"
+
+    - name: Copy Frontend files
+      copy:
+        src: "../soc_dashboard/frontend/{{ item }}"
+        dest: "/var/www/html/{{ item }}"
+      with_items:
+        - index.html
+        - style.css
+        - app.js
+
+    - name: Install FastAPI and Boto3
+      pip:
+        name:
+          - fastapi
+          - uvicorn
+          - boto3
+
+    - name: Create Systemd service for SOC Backend
+      copy:
+        dest: /etc/systemd/system/soc-backend.service
+        content: |
+          [Unit]
+          Description=PFE NIDS SOC Backend
+          After=network.target
+
+          [Service]
+          Type=simple
+          WorkingDirectory={{ soc_path }}
+          ExecStart=/usr/bin/python3 -m uvicorn main:app --host 0.0.0.0 --port 8001
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Start SOC Backend service
+      systemd:
+        name: soc-backend
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+
+    - name: Ensure Nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes

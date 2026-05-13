@@ -55,43 +55,58 @@ The project involved training and evaluating **11 different architectures**. Bel
 
 The system is divided into two main environments: a **local attack simulation zone** and a **cloud-based detection pipeline**.
 
+## 🏗️ Architecture du Système Cloud
+
+L'infrastructure est entièrement déployée sur **AWS (Region: eu-west-1)** et utilise des services managés pour garantir la réactivité du SOC.
+
 ```mermaid
 flowchart TB
- 
-    %% ZONE LOCALE — VMware Workstation
-    subgraph LOCAL["🖥️  Environnement local — VMware Workstation"]
-        direction TB
- 
-        subgraph KALI["VM Kali Linux"]
-            direction LR
-            NMAP["Nmap\nPortScan"]
-            HYDRA["Hydra\nBrute force SSH/FTP"]
-            SLOW["Slowloris\nDoS lent"]
-            HPING["Hping3 / LOIC\nDDoS"]
-            WEBATK["SQLmap / ZAP\nXSS · SQLi · Brute web"]
-        end
- 
-        MODELS_LOCAL["Modèles entraînés\nmodel.pt · scaler.pkl · labels.json\n(PyTorch — GPU local)"]
+    subgraph ATTACK["🖥️ Zone d'Attaque (Externe)"]
+        ATK[Script Python Scapy]
+        KALI[Kali Linux <br/> Nmap, Hping3, Metasploit]
     end
- 
-    INTERNET(["🌐  Internet / VPN optionnel\nIP publique · Security Group entrant"])
- 
-    %% AWS — eu-west-1
-    subgraph AWS["☁️  AWS Region — eu-west-1"]
+
+    subgraph AWS["☁️ Infrastructure AWS (Industrialisée)"]
         direction TB
- 
-        S3[("S3 — Registre modèles\nmodels/v1/ · v2/ · latest/")]
- 
-        subgraph VPC_CIBLE["VPC Cible — 10.0.2.0/24"]
-            direction LR
- 
-            subgraph TARGETS["Serveurs cibles"]
-                WEB["EC2 — Web\nApache / Nginx"]
-                SSH["EC2 — SSH/FTP\nOpenSSH"]
-                RDS[("RDS MySQL\nSQL injection")]
-            end
- 
-            SONDE["EC2 — Sonde réseau (t3.medium)\nVPC Traffic Mirroring\nZeek / Suricata → CICFlowMeter\n77 features / flux"]
+
+        subgraph VPC["VPC Public Subnet (10.0.1.0/24)"]
+            VICTIM["<b>Victim Node</b> (Apache)<br/>Cible des attaques"]
+            IDS["<b>IDS Node</b> (NFStreamer + IA)<br/>Analyse en temps réel"]
+            SOC["<b>SOC Node</b> (FastAPI + Dashboard)<br/>Visualisation Premium"]
+        end
+
+        subgraph PIPELINE["Pipeline de Détection"]
+            SQS[("AWS SQS<br/>Queue d'alertes")]
+            LAMBDA["AWS Lambda<br/>Ingestion serverless"]
+            DYNAMO[("AWS DynamoDB<br/>Base NIDS-Alerts")]
+        end
+
+        S3[("S3 Bucket<br/>Modèles PyTorch")]
+    end
+
+    %% Flux Réseau
+    ATK -->|Trafic Malveillant| VICTIM
+    VICTIM -.->|VPC Traffic Mirroring| IDS
+    
+    %% Flux Données
+    IDS -->|Alerte IA| SQS
+    SQS --> LAMBDA
+    LAMBDA --> DYNAMO
+    DYNAMO <-->|WebSocket / API| SOC
+    SOC -->|Push| ANALYST((Analyste SOC))
+
+    %% Styles
+    style VICTIM fill:#f9f,stroke:#333
+    style IDS fill:#00d4ff,stroke:#333
+    style SOC fill:#00ff94,stroke:#333
+    style PIPELINE fill:#f5f5f5,stroke:#333
+```
+
+### 🛰️ Composants Clés
+1. **AWS Traffic Mirroring** : Capture le trafic entrant sur l'interface de la victime et le renvoie vers l'IDS via un tunnel **VXLAN (VNI 100)**.
+2. **IDS Engine** : Basé sur **NFStreamer**, il extrait 77 features par flux et utilise un modèle **AttentionMLP** (PyTorch) pour prédire la nature du trafic.
+3. **Pipeline Serverless** : Les alertes transitent par SQS pour garantir qu'aucune détection n'est perdue en cas de pic de trafic.
+4. **Dashboard SOC** : Interface "Single Page Application" communiquant via **WebSockets** avec un backend FastAPI pour un affichage instantané.
         end
  
         subgraph PIPELINE["Pipeline d'inférence"]
