@@ -1,172 +1,153 @@
-# 🛡️ PFE-NIDS-AI: Deep Learning-based Network Intrusion Detection System
+# PFE-NIDS-AI : Deep Learning-based Network Intrusion Detection System
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![AWS](https://img.shields.io/badge/AWS-Cyberrange-orange.svg)](https://aws.amazon.com/)
+[![Terraform](https://img.shields.io/badge/IaC-Terraform-623CE4.svg)](https://www.terraform.io/)
 
-## 📝 Project Overview
+## Présentation du Projet
 
-This project is a **Network Intrusion Detection System (NIDS)** developed as part of a Final Year Project (PFE). It leverages advanced **Deep Learning** techniques to identify and classify cyber-attacks in real-time by analyzing network traffic patterns.
+Ce projet est un **Système de Détection d'Intrusion Réseau (NIDS)** développé dans le cadre d'un Projet de Fin d'Études (PFE). Il utilise des techniques avancées de **Deep Learning** pour identifier et classifier les cyber-attaques en temps réel en analysant les motifs du trafic réseau.
 
-Unlike traditional signature-based IDS, this system uses behavioral analysis to detect both known threats and sophisticated zero-day attacks.
-
-### 🎯 Objectives
-1.  **Detection**: Identify anomalous behaviors and attacks within a network.
-2.  **Classification**: Categorize intrusions (DDoS, Port Scanning, Unauthorized Access, etc.).
-3.  **Real-world Evaluation**: Use the **CICIDS 2017** dataset for robust training and testing.
-4.  **Benchmarking**: Compare multiple deep learning architectures to find the most efficient model.
-5.  **Cloud Deployment**: Implementation of a **Cyberrange on AWS** for real-world testing.
+Contrairement aux systèmes IDS traditionnels basés sur des signatures, ce système utilise l'analyse comportementale pour détecter les menaces connues ainsi que les attaques sophistiquées de type **Zero-day**.
 
 ---
 
-## 📂 Dataset: CICIDS 2017
+## Menaces Détectées
 
-The models were trained and evaluated using the **CICIDS 2017** dataset.
-- **Description**: It provides a comprehensive set of network traffic data, including benign behaviors and common simulated attacks (DDoS, Brute Force, XSS, SQL Injection, etc.).
-*   **Environment**: Captured in a realistic network environment over a period of 5 days.
-*   **Significance**: It is one of the most widely used datasets for benchmarking modern AI-based NIDS due to its diversity and volume.
+Le système est entraîné pour identifier avec précision les vecteurs d'attaque suivants :
+- **DDoS / DoS** : GoldenEye, Hulk, Slowloris, etc.
+- **Scanning** : Port Scanning (Nmap), Vulnerability Scanning.
+- **Brute Force** : SSH, FTP (via Hydra).
+- **Web Attacks** : SQL Injection, XSS, Infiltration.
+- **Botnets & Malware** : Détection des communications C2.
 
 ---
 
-## 📊 Model Performance Comparison
+- **Détection Multi-Architecture** : Évaluation de 11 modèles de Deep Learning (Attention MLP, CNN-LSTM, Transformers, etc.).
+- **Temps Réel** : Pipeline d'inférence haute performance avec une latence < 5ms par flux.
+- **Cloud Native** : Infrastructure AWS industrialisée via **Terraform** (IaC).
+- **Dashboard Premium** : Interface SOC interactive en mode sombre pour une visualisation en temps réel.
+- **Mirroring Passif** : Utilisation d'AWS VPC Traffic Mirroring pour analyser le trafic sans impact sur les performances des cibles.
+- **Automated Lab** : Simulation d'attaques automatisée via scripts Python (Scapy) et Kali Linux.
 
-The project involved training and evaluating **11 different architectures**. Below is a summary of the performance metrics achieved on the test dataset:
+---
 
-| Model Architecture | Accuracy (%) | Precision (%) | Recall (%) | F1-Score (%) | AUC-ROC | Training Time (s) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Attention MLP** | **98.28** | **98.46** | **98.28** | **98.29** | **0.9995** | 258.8 |
-| **CNN-LSTM** | 98.14 | 98.52 | 98.14 | 97.99 | 0.9995 | 3502.8 |
-| **ResNet1D** | 98.14 | 98.32 | 98.14 | 98.12 | 0.9995 | 639.8 |
-| **BiLSTM** | 97.92 | 98.08 | 97.92 | 97.94 | 0.9992 | 2227.4 |
-| **CNN1D** | 97.84 | 98.32 | 97.84 | 97.71 | 0.9990 | 355.3 |
-| **GRU** | 97.83 | 98.11 | 97.83 | 97.81 | 0.9992 | 631.8 |
-| **AE Classifier** | 97.74 | 97.99 | 97.74 | 97.64 | 0.9990 | 330.3 |
-| **LSTM** | 97.71 | 98.12 | 97.71 | 97.56 | 0.9992 | 934.5 |
-| **TCN** | 97.62 | 97.87 | 97.62 | 97.59 | 0.9993 | 2153.9 |
-| **MLP** | 97.62 | 97.86 | 97.62 | 97.47 | 0.9988 | 234.8 |
-| **Transformer** | 97.58 | 97.94 | 97.58 | 97.47 | 0.9991 | 3213.8 |
+## Performance des Modèles
+
+Le projet a comparé **11 architectures différentes** sur le dataset **CICIDS 2017**.
+
+| Modèle | Précision (%) | F1-Score (%) | AUC-ROC | Temps d'Entraînement |
+| :--- | :---: | :---: | :---: | :---: |
+| **Attention MLP** | **98.28** | **98.29** | **0.9995** | **Rapide (258s)** |
+| **CNN-LSTM** | 98.14 | 97.99 | 0.9995 | Lent (3502s) |
+| **ResNet1D** | 98.14 | 98.12 | 0.9995 | Moyen (639s) |
+| BiLSTM | 97.92 | 97.94 | 0.9992 | Lent (2227s) |
+| Transformers | 97.58 | 97.47 | 0.9991 | Très Lent (3213s) |
 
 > [!TIP]
-> **Attention MLP** emerged as the best performing model overall, offering a high balance between accuracy (98.28%) and training efficiency.
+> Le modèle **Attention MLP** a été sélectionné pour le déploiement final en raison de son excellent compromis entre précision chirurgicale et efficacité de calcul.
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture du Système
 
-The system is divided into two main environments: a **local attack simulation zone** and a **cloud-based detection pipeline**.
-
-## 🏗️ Architecture du Système Cloud
-
-L'infrastructure est entièrement déployée sur **AWS (Region: eu-west-1)** et utilise des services managés pour garantir la réactivité du SOC.
+L'infrastructure est entièrement déployée sur **AWS (Region: eu-west-1)** et utilise une approche serverless pour le pipeline de données.
 
 ```mermaid
 flowchart TB
-    subgraph ATTACK["🖥️ Zone d'Attaque (Externe)"]
+    subgraph ATTACK["Zone d'Attaque (Externe)"]
         ATK[Script Python Scapy]
-        KALI[Kali Linux <br/> Nmap, Hping3, Metasploit]
+        KALI[Kali Linux / Nmap / Hping3]
     end
 
-    subgraph AWS["☁️ Infrastructure AWS (Industrialisée)"]
+    subgraph AWS["Infrastructure AWS (Managed)"]
         direction TB
 
-        subgraph VPC["VPC Public Subnet (10.0.1.0/24)"]
-            VICTIM["<b>Victim Node</b> (Apache)<br/>Cible des attaques"]
-            IDS["<b>IDS Node</b> (NFStreamer + IA)<br/>Analyse en temps réel"]
-            SOC["<b>SOC Node</b> (FastAPI + Dashboard)<br/>Visualisation Premium"]
+        subgraph VPC["VPC Security Zone"]
+            VICTIM["<b>Victim Node</b><br/>Apache Server"]
+            IDS["<b>IDS Node</b><br/>NFStreamer + PyTorch IA"]
+            SOC_SRV["<b>SOC Backend</b><br/>FastAPI + WebSockets"]
         end
 
-        subgraph PIPELINE["Pipeline de Détection"]
-            SQS[("AWS SQS<br/>Queue d'alertes")]
-            LAMBDA["AWS Lambda<br/>Ingestion serverless"]
-            DYNAMO[("AWS DynamoDB<br/>Base NIDS-Alerts")]
+        subgraph PIPELINE["Pipeline Asynchrone"]
+            SQS[("AWS SQS<br/>Alert Queue")]
+            LAMBDA["AWS Lambda<br/>Data Normalization"]
+            DYNAMO[("AWS DynamoDB<br/>Alerts Storage")]
         end
 
-        S3[("S3 Bucket<br/>Modèles PyTorch")]
+        S3[("S3 Bucket<br/>AI Models (.pth)")]
     end
 
-    %% Flux Réseau
+    %% Network Flow
     ATK -->|Trafic Malveillant| VICTIM
     VICTIM -.->|VPC Traffic Mirroring| IDS
     
-    %% Flux Données
-    IDS -->|Alerte IA| SQS
+    %% Data Flow
+    IDS -->|JSON Flow Features| SQS
     SQS --> LAMBDA
     LAMBDA --> DYNAMO
-    DYNAMO <-->|WebSocket / API| SOC
-    SOC -->|Push| ANALYST((Analyste SOC))
+    DYNAMO <-->|Real-time Feed| SOC_SRV
+    SOC_SRV -->|Push| UI["SOC Dashboard (Premium UI)"]
 
     %% Styles
     style VICTIM fill:#f9f,stroke:#333
     style IDS fill:#00d4ff,stroke:#333
-    style SOC fill:#00ff94,stroke:#333
+    style SOC_SRV fill:#00ff94,stroke:#333
     style PIPELINE fill:#f5f5f5,stroke:#333
+    style UI fill:#ff9900,stroke:#333
 ```
-
-### 🛰️ Composants Clés
-1. **AWS Traffic Mirroring** : Capture le trafic entrant sur l'interface de la victime et le renvoie vers l'IDS via un tunnel **VXLAN (VNI 100)**.
-2. **IDS Engine** : Basé sur **NFStreamer**, il extrait 77 features par flux et utilise un modèle **AttentionMLP** (PyTorch) pour prédire la nature du trafic.
-3. **Pipeline Serverless** : Les alertes transitent par SQS pour garantir qu'aucune détection n'est perdue en cas de pic de trafic.
-4. **Dashboard SOC** : Interface "Single Page Application" communiquant via **WebSockets** avec un backend FastAPI pour un affichage instantané.
-        end
- 
-        subgraph PIPELINE["Pipeline d'inférence"]
-            direction LR
-            SQS["SQS Queue\nBuffer flux"]
-            LAMBDA["λ Prétraitement\nStandardScaler"]
-            EC2_INF["EC2 — FastAPI (c5.large)\nAttention MLP\nmodel.pt loaded from S3"]
-        end
- 
-        subgraph ALERTING["Alerting & Stockage"]
-            direction LR
-            SNS["SNS\nEmail · Slack"]
-            DYNAMO[("DynamoDB\nAlerts & Scores")]
-            CW["CloudWatch\nLogs & Metrics"]
-        end
- 
-        GRAFANA["Grafana — Dashboard SOC\nTimeline & Real-time Alerts"]
- 
-        subgraph INFRA["Infrastructure transverse"]
-            direction LR
-            IAM["IAM Roles"]
-            SG["Security Groups"]
-            TF["Terraform IaC"]
-            CICD["GitHub Actions"]
-        end
-    end
- 
-    %% FLUX
-    KALI -->|"attaque via Internet"| INTERNET
-    INTERNET -->|"trafic malveillant"| TARGETS
-    MODELS_LOCAL -->|"aws s3 cp"| S3
-    S3 -->|"pull at boot"| EC2_INF
-    TARGETS --> SONDE
-    SONDE -->|"77 features JSON"| SQS
-    SQS --> LAMBDA
-    LAMBDA -->|"normalized vector"| EC2_INF
-    EC2_INF -->|"attack detected"| SNS
-    EC2_INF --> DYNAMO
-    EC2_INF --> CW
-    DYNAMO --> GRAFANA
-    CW --> GRAFANA
-```
-
-### Key Components:
-- **Local Lab (Kali Linux)**: Uses tools like Nmap, Hydra, and Slowloris to simulate real-world attack vectors.
-- **VPC Traffic Mirroring**: Captures raw traffic from target instances without performance overhead.
-- **Data Sonde (Zeek/Suricata)**: Extracts 77 network features using `CICFlowMeter` and sends them to a buffer.
-- **Asynchronous Pipeline**: Uses **Amazon SQS** and **AWS Lambda** for decoupled, scalable preprocessing.
-- **Inference Engine (FastAPI)**: Serves the **Attention MLP** model with sub-5ms latency per flow.
-- **SOC Dashboard**: Real-time visualization of threats using **Grafana**, **CloudWatch**, and **DynamoDB**.
 
 ---
 
-## 🛠️ Tech Stack
-- **Languages**: Python
-- **Frameworks**: TensorFlow / Keras, Scikit-learn, Pandas, NumPy
-- **Cloud**: AWS (EC2, VPC, Traffic Mirroring)
-- **Monitoring**: ELK Stack / Grafana (Planned)
+## Stack Technique
+
+- **Intelligence Artificielle** : PyTorch, Scikit-learn, Pandas, NFStreamer.
+- **Backend & API** : FastAPI, Pydantic, WebSockets.
+- **Frontend** : Vanilla JS, CSS3 Modern (Dark Mode), Chart.js.
+- **Infrastructure** : AWS (EC2, Lambda, SQS, DynamoDB, S3, VPC Mirroring).
+- **IaC & DevOps** : Terraform, Ansible, GitHub Actions.
 
 ---
 
-## 📖 Documentation
-Detailed project specifications can be found in the [Cahier des Charges](CAHIER_DES_CHARGES.md).
+## Installation & Déploiement
+
+### 1. Prérequis
+- Python 3.10+
+- Compte AWS configuré
+- Terraform & Ansible installés
+
+### 2. Déploiement Cloud
+```bash
+# Initialiser l'infrastructure
+cd terraform
+terraform init
+terraform apply -auto-approve
+
+# Configurer les instances (via Ansible)
+cd ../ansible
+ansible-playbook -i inventory setup_ids.yml
+```
+
+### 3. Lancer le Dashboard Localement (Mode Debug)
+```bash
+cd soc_dashboard/backend
+pip install -r requirements.txt
+python main.py
+
+# Ouvrir soc_dashboard/frontend/index.html dans votre navigateur
+```
+
+---
+
+## Documentation Complète
+
+Pour plus de détails sur les spécifications techniques et les choix de conception, consultez le [Cahier des Charges](CAHIER_DES_CHARGES.md).
+
+---
+
+## Auteur
+- **Mathieu** - Étudiant en Ingénierie Cyber-sécurité / IA.
+
+---
+*Ce projet a été réalisé dans le cadre d'un Stage de Fin d'Études (PFE).*
