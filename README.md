@@ -112,6 +112,51 @@ flowchart TB
     style UI fill:#fffbeb,stroke:#ffcc00,stroke-width:2px
 ```
 
+
+---
+
+## Pipeline de Détection et d'Alerte Étape par Étape
+
+Le diagramme de séquence ci-dessous illustre le parcours d'un flux de données réseau, depuis le déclenchement d'une cyber-attaque sur la zone d'entraînement jusqu'à sa visualisation en temps réel sur le tableau de bord du SOC :
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Attaquant as 💻 Kali Linux (Attaquant)
+    participant Victime as 🖥️ Cible (Victim Node)
+    participant Mirror as ☁️ AWS VPC (Traffic Mirroring)
+    participant Sonde as 🔍 IDS-Node (NFStreamer)
+    participant IA as 🧠 Attention MLP (PyTorch)
+    participant Dynamo as 🗄️ AWS DynamoDB (NIDS-Alerts)
+    participant SQS as ✉️ AWS SQS (flow_queue)
+    participant Lambda as ⚡ AWS Lambda (Prep)
+    participant Back as ⚙️ SOC Backend (FastAPI)
+    actor Analyste as 📊 SOC Dashboard (React UI)
+
+    Note over Attaquant, Victime: Étape 1 : Attaque & Trafic Réseau
+    Attaquant->>Victime: Envoi de Trafic Malveillant (DDoS, Scan, Brute Force)
+    
+    Note over Victime, Mirror: Étape 2 : Captation (Zero-Impact)
+    Mirror->>Victime: Duplication passive des paquets suspects
+    Mirror->>Sonde: Encapsulation VXLAN (Port 4789) vers l'interface vxlan0
+    
+    Note over Sonde, IA: Étape 3 & 4 : Analyse & Inférence de l'IA
+    Sonde->>Sonde: Décapsulation VXLAN & Agrégation par flux réseau
+    Sonde->>IA: Extraction des 77 caractéristiques (Features) du flux
+    IA->>IA: Classification par le modèle de Deep Learning
+    Note over IA: Si Attaque détectée & Confiance >= 40%
+    
+    Note over IA, Dynamo: Étape 5 : Routage & Stockage des Alertes
+    IA->>Dynamo: Sauvegarde immédiate de l'Alerte enrichie
+    IA->>SQS: Bufferisation du JSON d'alerte pour les audits
+    SQS->>Lambda: Déclenchement automatique pour pré-traitement / archivage S3
+    
+    Note over Dynamo, Analyste: Étape 6 & 7 : Diffusion & Visualisation SOC
+    Back->>Dynamo: Polling et enrichissement de l'IP en Nom de Machine
+    Back->>Analyste: Diffusion en temps réel via WebSockets (Port 8001)
+    Analyste->>Analyste: Affichage instantané, alerte sonore, mise à jour des KPIs
+```
+
 ---
 
 ## Stack Technique
