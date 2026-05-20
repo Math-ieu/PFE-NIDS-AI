@@ -27,11 +27,12 @@ resource "aws_ec2_traffic_mirror_filter_rule" "outbound" {
   traffic_direction        = "egress"
 }
 
-# 3. Session de miroir (attachée à la victime)
+# 3. Session de miroir (attachée à chaque victime)
 resource "aws_ec2_traffic_mirror_session" "victim_session" {
-  network_interface_id     = aws_instance.victim_node.primary_network_interface_id
+  for_each                 = var.victims
+  network_interface_id     = aws_instance.victim_node[each.key].primary_network_interface_id
   traffic_mirror_target_id = aws_ec2_traffic_mirror_target.ids_target.id
   traffic_mirror_filter_id = aws_ec2_traffic_mirror_filter.all_traffic.id
-  session_number           = 1
+  session_number           = index(keys(var.victims), each.key) + 1
   virtual_network_id       = 100
 }

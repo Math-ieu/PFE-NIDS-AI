@@ -27,7 +27,7 @@ Le système est entraîné pour identifier avec précision les vecteurs d'attaqu
 - **Détection Multi-Architecture** : Évaluation de 11 modèles de Deep Learning (Attention MLP, CNN-LSTM, Transformers, etc.).
 - **Temps Réel** : Pipeline d'inférence haute performance avec une latence < 5ms par flux.
 - **Cloud Native** : Infrastructure AWS industrialisée via **Terraform** (IaC).
-- **Dashboard Premium** : Interface SOC interactive en mode sombre pour une visualisation en temps réel.
+- **Dashboard Premium** : Interface SOC interactive en **ReactJS + Vite** (design Glassmorphism, thèmes **Dark / Light**, menu repliable avec persistance locale, rafraîchissement des graphes optimisé à 10s et filtrage par date ultra-réactif sur tous les flux en direct et historiques).
 - **Mirroring Passif** : Utilisation d'AWS VPC Traffic Mirroring pour analyser le trafic sans impact sur les performances des cibles.
 - **Automated Lab** : Simulation d'attaques automatisée via scripts Python (Scapy) et Kali Linux.
 
@@ -52,25 +52,30 @@ Le projet a comparé **11 architectures différentes** sur le dataset **CICIDS 2
 
 ## Architecture du Système
 
-L'infrastructure est entièrement déployée sur **AWS (Region: eu-west-1)** et utilise une approche serverless pour le pipeline de données.
+L'infrastructure est entièrement déployée sur **AWS (Region: eu-west-1)** et utilise une approche hybride associant des instances EC2 spécialisées et un pipeline serverless asynchrone pour la persistance des alertes.
 
 ```mermaid
 flowchart TB
-    subgraph ATTACK["Zone d'Attaque (Externe)"]
-        ATK[Script Python Scapy]
-        KALI[Kali Linux / Nmap / Hping3]
+    subgraph ATTACK["Zone d'Attaque (AWS Externe/Interne)"]
+        KALI["<b>Kali Linux Attack Machine</b><br/>Interface GUI/RDP (XFCE + XRDP)<br/>Nmap / Hping3 / Scapy"]
     end
 
-    subgraph AWS["Infrastructure AWS (Managed)"]
+    subgraph AWS["Infrastructure AWS (Region: eu-west-1)"]
         direction TB
 
-        subgraph VPC["VPC Security Zone"]
-            VICTIM["<b>Victim Node</b><br/>Apache Server"]
-            IDS["<b>IDS Node</b><br/>NFStreamer + PyTorch IA"]
-            SOC_SRV["<b>SOC Backend</b><br/>FastAPI + WebSockets"]
+        subgraph VPC["VPC Security Zone (10.0.0.0/16)"]
+            direction TB
+            subgraph VICTIMS["Cibles du Cyberrange (Subnet Public)"]
+                V_WEB["<b>Victim-Web</b><br/>(10.0.1.232)<br/>Apache + PHP"]
+                V_DB["<b>Victim-DB</b><br/>(10.0.1.180)<br/>MariaDB + Redis"]
+                V_FILE["<b>Victim-File</b><br/>(10.0.1.244)<br/>Samba + vsftpd (FTP)"]
+            end
+
+            IDS["<b>IDS-Node</b><br/>VXLAN vxlan0 (VNI 100)<br/>NFStream + PyTorch IA"]
+            SOC_SRV["<b>SOC-Dashboard Node</b><br/>Nginx (Frontend Port 80)<br/>FastAPI + WebSockets (Port 8001)"]
         end
 
-        subgraph PIPELINE["Pipeline Asynchrone"]
+        subgraph PIPELINE["Pipeline de Données Asynchrone"]
             SQS[("AWS SQS<br/>Alert Queue")]
             LAMBDA["AWS Lambda<br/>Data Normalization"]
             DYNAMO[("AWS DynamoDB<br/>Alerts Storage")]
@@ -79,23 +84,32 @@ flowchart TB
         S3[("S3 Bucket<br/>AI Models (.pth)")]
     end
 
-    %% Network Flow
-    ATK -->|Trafic Malveillant| VICTIM
-    VICTIM -.->|VPC Traffic Mirroring| IDS
+    %% Network & Attack Flows
+    KALI -->|Attaques Réseau| V_WEB
+    KALI -->|Attaques Réseau| V_DB
+    KALI -->|Attaques Réseau| V_FILE
     
-    %% Data Flow
+    %% Traffic Mirroring Flows
+    V_WEB -.->|VPC Traffic Mirroring| IDS
+    V_DB -.->|VPC Traffic Mirroring| IDS
+    V_FILE -.->|VPC Traffic Mirroring| IDS
+
+    %% Data Pipeline Flow
     IDS -->|JSON Flow Features| SQS
     SQS --> LAMBDA
     LAMBDA --> DYNAMO
-    DYNAMO <-->|Real-time Feed| SOC_SRV
-    SOC_SRV -->|Push| UI["SOC Dashboard (Premium UI)"]
+    DYNAMO <-->|Flux Temps Réel| SOC_SRV
+    SOC_SRV -->|WebSockets Push| UI["Glassmorphic SOC Dashboard UI"]
 
     %% Styles
-    style VICTIM fill:#f9f,stroke:#333
-    style IDS fill:#00d4ff,stroke:#333
-    style SOC_SRV fill:#00ff94,stroke:#333
+    style V_WEB fill:#ffe5e5,stroke:#ff3e60,stroke-width:2px
+    style V_DB fill:#ffe5e5,stroke:#ff3e60,stroke-width:2px
+    style V_FILE fill:#ffe5e5,stroke:#ff3e60,stroke-width:2px
+    style IDS fill:#e6f9ff,stroke:#00d4ff,stroke-width:2px
+    style SOC_SRV fill:#e6fff4,stroke:#00ff94,stroke-width:2px
+    style KALI fill:#f5f0ff,stroke:#7000ff,stroke-width:2px
     style PIPELINE fill:#f5f5f5,stroke:#333
-    style UI fill:#ff9900,stroke:#333
+    style UI fill:#fffbeb,stroke:#ffcc00,stroke-width:2px
 ```
 
 ---
@@ -104,9 +118,9 @@ flowchart TB
 
 - **Intelligence Artificielle** : PyTorch, Scikit-learn, Pandas, NFStreamer.
 - **Backend & API** : FastAPI, Pydantic, WebSockets.
-- **Frontend** : Vanilla JS, CSS3 Modern (Dark Mode), Chart.js.
+- **Frontend** : ReactJS (Vite + Component-driven design), CSS3 Glassmorphic Cyberpunk, Lucide Icons, Chart.js.
 - **Infrastructure** : AWS (EC2, Lambda, SQS, DynamoDB, S3, VPC Mirroring).
-- **IaC & DevOps** : Terraform, Ansible, GitHub Actions.
+- **IaC & DevOps** : Terraform, Ansible, Git.
 
 ---
 
@@ -114,28 +128,35 @@ flowchart TB
 
 ### 1. Prérequis
 - Python 3.10+
+- Node.js & npm (pour le développement/build frontend)
 - Compte AWS configuré
 - Terraform & Ansible installés
 
-### 2. Déploiement Cloud
+### 2. Déploiement Cloud (Terraform & Ansible)
 ```bash
-# Initialiser l'infrastructure
+# 1. Déployer l'infrastructure sur AWS
 cd terraform
 terraform init
 terraform apply -auto-approve
 
-# Configurer les instances (via Ansible)
-cd ../ansible
-ansible-playbook -i inventory setup_ids.yml
+# 2. Configurer et orchestrer le Cyberrange (depuis la racine)
+cd ..
+./setup_range.sh
 ```
+Ce script `setup_range.sh` génère l'inventaire Ansible de manière dynamique et applique le playbook `ansible/playbook.yml` pour provisionner et démarrer tous les services ainsi que le NIDS.
 
 ### 3. Lancer le Dashboard Localement (Mode Debug)
 ```bash
+# Dans un premier terminal (Backend FastAPI) :
 cd soc_dashboard/backend
+python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 python main.py
 
-# Ouvrir soc_dashboard/frontend/index.html dans votre navigateur
+# Dans un second terminal (Frontend React + Vite) :
+cd soc_dashboard/frontend
+npm install
+npm run dev
 ```
 
 ---

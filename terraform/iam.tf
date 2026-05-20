@@ -51,6 +51,13 @@ resource "aws_iam_role_policy" "s3_access" {
         ]
         Effect   = "Allow"
         Resource = "*"
+      },
+      {
+        Action = [
+          "ec2:DescribeInstances"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
       }
     ]
   })

@@ -51,20 +51,20 @@ L'infrastructure sur AWS est conçue pour être hautement disponible et découpl
 | :--- | :--- | :--- |
 | **Zone d'Attaque** | Simulation locale (VMware) envoyant du trafic via Internet. | Kali Linux |
 | **VPC Cible** | Héberge les serveurs Web, SSH et RDS cibles. | Amazon VPC |
-| **Sonde (Mirroring)** | Capture le trafic et extrait 77 features. | Zeek / Suricata + CICFlowMeter |
+| **Sonde (Mirroring)** | Capture le trafic et extrait les features de flux. | Sonde passive via NFStreamer |
 | **Queue (SQS)** | Bufferise les flux extraits pour l'inférence. | Amazon SQS |
-| **Prétraitement** | Normalisation des données (StandardScaler) à la volée. | AWS Lambda |
+| **Prétraitement** | Normalisation des données à la volée. | AWS Lambda |
 | **Moteur d'Inférence** | Prédiction en temps réel (< 5ms). | EC2 + FastAPI (Attention MLP) |
 | **Alerting** | Notification immédiate en cas d'attaque. | Amazon SNS (Slack/Email) |
-| **Dashboard SOC** | Visualisation et monitoring des menaces. | Grafana + CloudWatch |
+| **Dashboard SOC** | Visualisation et monitoring interactif des menaces. | ReactJS (Vite) + Nginx |
 
 ### Flux de Données détaillé :
 1. **Attaque** : L'attaquant (Kali) lance des payloads via une IP publique/VPN.
 2. **Mirroring** : Le trafic est dupliqué au niveau du VPC AWS sans impact sur la cible.
-3. **Extraction** : La sonde convertit les paquets PCAP en flux JSON (77 features).
+3. **Extraction** : La sonde convertit les paquets PCAP en flux JSON caractéristiques.
 4. **Pipeline** : SQS → Lambda (Scaling) → EC2 Inférence.
 5. **Alerte** : Si `classe != BENIGN` et `conf >= 70%`, une alerte SNS est déclenchée.
-6. **SOC** : Les scores sont stockés dans DynamoDB pour affichage sur Grafana.
+6. **SOC** : Les alertes sont stockées dans DynamoDB et diffusées en temps réel sur le tableau de bord React via WebSockets.
 
 ---
 
@@ -77,10 +77,10 @@ L'infrastructure sur AWS est conçue pour être hautement disponible et découpl
 
 ---
 
-## 6. Planning Prévisionnel
+## 6. Planning Révisionnel
 1. **Phase 1 : Recherche & Data Preparation** (Terminé)
 2. **Phase 2 : Développement & Entraînement des Modèles** (Terminé)
 3. **Phase 3 : Évaluation & Sélection du Meilleur Modèle** (Terminé)
-4. **Phase 4 : Conception de l'Architecture AWS** (En cours)
-5. **Phase 5 : Déploiement & Tests en Conditions Réelles** (À venir)
-6. **Phase 6 : Rédaction du Mémoire** (À venir)
+4. **Phase 4 : Conception de l'Architecture AWS** (Terminé)
+5. **Phase 5 : Déploiement & Tests en Conditions Réelles** (Terminé)
+6. **Phase 6 : Rédaction du Mémoire** (En cours)

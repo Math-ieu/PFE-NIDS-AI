@@ -8,15 +8,111 @@
         update_cache: yes
         cache_valid_time: 3600
 
-- name: Setup Victim Node
-  hosts: victim
+- name: Setup Victim Web Node
+  hosts: victim-web
   become: yes
   tasks:
+    - name: Ensure Apache and PHP are installed
+      apt:
+        name:
+          - apache2
+          - php
+          - libapache2-mod-php
+        state: present
+
     - name: Ensure Apache is running
       service:
         name: apache2
         state: started
         enabled: yes
+
+    - name: Create index page
+      copy:
+        content: "<h1>NIDS Victim Node - Web Service</h1>"
+        dest: /var/www/html/index.html
+
+- name: Setup Victim DB Node
+  hosts: victim-db
+  become: yes
+  tasks:
+    - name: Ensure MariaDB and Redis are installed
+      apt:
+        name:
+          - mariadb-server
+          - redis-server
+        state: present
+
+    - name: Ensure MariaDB is running
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+    - name: Ensure Redis is running
+      service:
+        name: redis-server
+        state: started
+        enabled: yes
+
+    - name: Configure MariaDB to listen on all interfaces
+      lineinfile:
+        path: /etc/mysql/mariadb.conf.d/50-server.cnf
+        regexp: '^bind-address'
+        line: 'bind-address            = 0.0.0.0'
+      notify: Restart MariaDB
+
+    - name: Configure Redis to listen on all interfaces
+      lineinfile:
+        path: /etc/redis/redis.conf
+        regexp: '^bind '
+        line: 'bind 0.0.0.0'
+      notify: Restart Redis
+
+  handlers:
+    - name: Restart MariaDB
+      service:
+        name: mariadb
+        state: restarted
+    - name: Restart Redis
+      service:
+        name: redis-server
+        state: restarted
+
+- name: Setup Victim File Node
+  hosts: victim-file
+  become: yes
+  tasks:
+    - name: Ensure Samba and FTP are installed
+      apt:
+        name:
+          - samba
+          - vsftpd
+        state: present
+
+    - name: Ensure Samba is running
+      service:
+        name: smbd
+        state: started
+        enabled: yes
+
+    - name: Ensure FTP is running
+      service:
+        name: vsftpd
+        state: started
+        enabled: yes
+
+    - name: Configure vsftpd for anonymous access
+      lineinfile:
+        path: /etc/vsftpd.conf
+        regexp: '^anonymous_enable='
+        line: 'anonymous_enable=YES'
+      notify: Restart vsftpd
+
+  handlers:
+    - name: Restart vsftpd
+      service:
+        name: vsftpd
+        state: restarted
 
 - name: Setup IDS Node
   hosts: ids
@@ -102,9 +198,122 @@
 - name: Setup SOC Node
   hosts: soc
   become: yes
+  vars:
+    soc_path: "/opt/soc_dashboard"
   tasks:
-    - name: Ensure Grafana is running
+    - name: Install system dependencies
+      apt:
+        name:
+          - python3-pip
+          - python3-dev
+          - nginx
+        state: present
+
+    - name: Create SOC directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      with_items:
+        - "{{ soc_path }}"
+        - "{{ soc_path }}/backend"
+        - "{{ soc_path }}/frontend"
+
+    - name: Copy backend code
+      copy:
+        src: "../soc_dashboard/backend/main.py"
+        dest: "{{ soc_path }}/backend/main.py"
+
+    - name: Copy frontend files
+      copy:
+        src: "../soc_dashboard/frontend/dist/"
+        dest: "{{ soc_path }}/frontend"
+
+    - name: Install Python libraries for SOC Backend
+      pip:
+        name:
+          - fastapi
+          - uvicorn
+          - boto3
+
+    - name: Configure Nginx to serve frontend
+      copy:
+        dest: /etc/nginx/sites-available/default
+        content: |
+          server {
+              listen 80 default_server;
+              listen [::]:80 default_server;
+
+              root {{ soc_path }}/frontend;
+              index index.html;
+
+              server_name _;
+
+              location / {
+                  try_files $uri $uri/ =404;
+              }
+          }
+
+    - name: Restart Nginx
       service:
-        name: grafana-server
-        state: started
+        name: nginx
+        state: restarted
+        enabled: yes
+
+    - name: Create Systemd service for SOC Backend
+      copy:
+        dest: /etc/systemd/system/soc-backend.service
+        content: |
+          [Unit]
+          Description=SOC Dashboard Backend
+          After=network.target
+
+          [Service]
+          Type=simple
+          WorkingDirectory={{ soc_path }}/backend
+          ExecStart=/usr/bin/python3 -m uvicorn main:app --host 0.0.0.0 --port 8001
+          Restart=always
+          Environment="AWS_DEFAULT_REGION=eu-west-1"
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Start SOC Backend service
+      systemd:
+        name: soc-backend
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+
+- name: Setup Kali Linux GUI and RDP
+  hosts: kali
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install XFCE Desktop and XRDP
+      apt:
+        name:
+          - kali-desktop-xfce
+          - xrdp
+        state: present
+
+    - name: Set password for user kali
+      shell: echo 'kali:KaliRangePassword123!' | chpasswd
+
+    - name: Configure XRDP to use XFCE
+      copy:
+        dest: /home/kali/.xsession
+        content: "xfce4-session"
+        owner: kali
+        group: kali
+        mode: '0644'
+
+    - name: Ensure XRDP is started and enabled
+      service:
+        name: xrdp
+        state: restarted
         enabled: yes

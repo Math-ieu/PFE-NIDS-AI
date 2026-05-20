@@ -60,13 +60,6 @@ resource "aws_security_group" "ids_sg" {
   }
 
   ingress {
-    from_port   = 3000
-    to_port     = 3000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Grafana
-  }
-
-  ingress {
     from_port   = 8001
     to_port     = 8001
     protocol    = "tcp"

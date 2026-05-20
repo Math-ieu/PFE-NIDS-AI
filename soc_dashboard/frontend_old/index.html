@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-NIDS | Cyber SOC Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside>
+            <div class="logo-container">
+                <div class="logo-icon"><i class="fas fa-shield-virus"></i></div>
+                <div class="logo-text">AI-NIDS<span>.SOC</span></div>
+            </div>
+            <nav>
+                <ul>
+                    <li class="nav-item active" data-section="monitoring">
+                        <i class="fas fa-desktop"></i> Monitoring Live
+                    </li>
+                    <li class="nav-item" data-section="history">
+                        <i class="fas fa-history"></i> Historique SQS
+                    </li>
+                    <li class="nav-item" data-section="threats">
+                        <i class="fas fa-biohazard"></i> Analyse Menaces
+                    </li>
+                    <li class="nav-item" data-section="settings">
+                        <i class="fas fa-cog"></i> Configuration
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="avatar">AN</div>
+                    <div class="name">Admin NIDS</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-wrapper">
+            <header>
+                <div class="header-left">
+                    <h1 id="section-title">Monitoring Temps Réel</h1>
+                    <p class="section-subtitle">Surveillance active des flux réseau via Traffic Mirroring</p>
+                </div>
+                <div class="header-right">
+                    <button id="audio-toggle" class="btn-icon" onclick="toggleAudio()" title="Activer/Désactiver le son"><i class="fas fa-volume-up" id="audio-icon"></i></button>
+                    <div id="ws-status-badge" class="status-badge disconnected">
+                        <div class="status-dot"></div>
+                        <span id="ws-status-text">OFFLINE</span>
+                    </div>
+                    <div class="notification-bell">
+                        <i class="fas fa-bell"></i>
+                        <span class="pulse-count" id="unread-count">0</span>
+                    </div>
+                </div>
+            </header>
+
+            <main id="content-area">
+                <!-- Section Monitoring (Par défaut) -->
+                <section id="monitoring" class="active">
+                    <div class="stats-grid">
+                        <div class="stat-card glass">
+                            <div class="card-icon blue"><i class="fas fa-wave-square"></i></div>
+                            <div class="card-info">
+                                <h3>Flux Réseau Analysés</h3>
+                                <div class="value" id="total-alerts">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card glass">
+                            <div class="card-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="card-info">
+                                <h3>Attaques Critiques</h3>
+                                <div class="value" id="critical-alerts">0</div>
+                            </div>
+                        </div>
+                        <div class="stat-card glass">
+                            <div class="card-icon purple"><i class="fas fa-microchip"></i></div>
+                            <div class="card-info">
+                                <h3>Latence d'Inférence</h3>
+                                <div class="value" id="avg-latency">1.8 ms</div>
+                            </div>
+                        </div>
+                        <div class="stat-card glass">
+                            <div class="card-icon green" id="threat-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="card-info">
+                                <h3>Niveau de Menace</h3>
+                                <div class="value" id="threat-level">FAIBLE</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Victim Monitor Grid -->
+                    <div class="victim-monitor-header">
+                        <h2><i class="fas fa-desktop"></i> Cibles du Cyberrange AWS</h2>
+                    </div>
+                    <div class="victim-grid">
+                        <div class="victim-card glass" id="card-Victim-Web">
+                            <div class="victim-status-container">
+                                <div class="victim-status-dot safe"></div>
+                                <span class="victim-health safe" id="status-Victim-Web">SÉCURISÉ</span>
+                            </div>
+                            <div class="victim-header">
+                                <div class="victim-avatar"><i class="fas fa-globe"></i></div>
+                                <div>
+                                    <h4 class="victim-name">Victim-Web</h4>
+                                    <span class="victim-ip">Web Service</span>
+                                </div>
+                            </div>
+                            <div class="victim-services">
+                                <span class="badge">apache2 (HTTP)</span>
+                                <span class="badge">PHP</span>
+                            </div>
+                            <div class="victim-alert-stat">
+                                <span class="label">Alertes SQS:</span>
+                                <span class="value count" id="count-Victim-Web">0</span>
+                            </div>
+                        </div>
+
+                        <div class="victim-card glass" id="card-Victim-DB">
+                            <div class="victim-status-container">
+                                <div class="victim-status-dot safe"></div>
+                                <span class="victim-health safe" id="status-Victim-DB">SÉCURISÉ</span>
+                            </div>
+                            <div class="victim-header">
+                                <div class="victim-avatar"><i class="fas fa-database"></i></div>
+                                <div>
+                                    <h4 class="victim-name">Victim-DB</h4>
+                                    <span class="victim-ip">Database Service</span>
+                                </div>
+                            </div>
+                            <div class="victim-services">
+                                <span class="badge">mariadb (SQL)</span>
+                                <span class="badge">redis</span>
+                            </div>
+                            <div class="victim-alert-stat">
+                                <span class="label">Alertes SQS:</span>
+                                <span class="value count" id="count-Victim-DB">0</span>
+                            </div>
+                        </div>
+
+                        <div class="victim-card glass" id="card-Victim-File">
+                            <div class="victim-status-container">
+                                <div class="victim-status-dot safe"></div>
+                                <span class="victim-health safe" id="status-Victim-File">SÉCURISÉ</span>
+                            </div>
+                            <div class="victim-header">
+                                <div class="victim-avatar"><i class="fas fa-folder-open"></i></div>
+                                <div>
+                                    <h4 class="victim-name">Victim-File</h4>
+                                    <span class="victim-ip">File Service</span>
+                                </div>
+                            </div>
+                            <div class="victim-services">
+                                <span class="badge">samba (SMB)</span>
+                                <span class="badge">vsftpd (FTP)</span>
+                            </div>
+                            <div class="victim-alert-stat">
+                                <span class="label">Alertes SQS:</span>
+                                <span class="value count" id="count-Victim-File">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="alerts-container glass">
+                            <div class="container-header live-header">
+                                <h2>Flux d'Alertes en Direct</h2>
+                                <div class="filter-controls">
+                                    <div class="search-box">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" id="alert-search" placeholder="Rechercher IP/Attaque..." oninput="applyFilters()">
+                                    </div>
+                                    <select id="filter-target" class="glass-select" onchange="applyFilters()">
+                                        <option value="all">Toutes cibles</option>
+                                        <option value="Victim-Web">Victim-Web</option>
+                                        <option value="Victim-DB">Victim-DB</option>
+                                        <option value="Victim-File">Victim-File</option>
+                                    </select>
+                                    <select id="sort-alerts" class="glass-select" onchange="applyFilters()">
+                                        <option value="time-desc">Plus Récents ↕</option>
+                                        <option value="time-asc">Plus Anciens ↕</option>
+                                        <option value="conf-desc">Confiance ↑</option>
+                                        <option value="conf-asc">Confiance ↓</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="alerts-list">
+                                <!-- Les alertes apparaîtront ici -->
+                                <div class="empty-state">
+                                    <i class="fas fa-satellite-dish"></i>
+                                    <p>En attente de données...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="charts-container">
+                            <div class="chart-card glass">
+                                <h3>Répartition des Menaces</h3>
+                                <div class="chart-wrapper">
+                                    <canvas id="attackChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card glass">
+                                <h3>Cibles les plus Visées</h3>
+                                <div class="chart-wrapper">
+                                    <canvas id="machineChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Historique -->
+                <section id="history">
+                    <div class="glass-panel">
+                        <div class="container-header history-header">
+                            <h2>Historique Global des Détections (DynamoDB)</h2>
+                            <div class="filter-controls">
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="history-search" placeholder="Rechercher IP/Attaque..." oninput="applyHistoryFilters()">
+                                </div>
+                                <select id="history-filter-type" class="glass-select" onchange="applyHistoryFilters()">
+                                    <option value="all">Tous les flux</option>
+                                    <option value="ATTACK">Attaques uniquement</option>
+                                    <option value="BENIGN">Trafic Bénin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-container">
+                            <table id="history-table">
+                                <thead>
+                                    <tr>
+                                        <th onclick="toggleHistorySort('timestamp')" class="sortable-header">Horodatage <span id="sort-icon-timestamp" class="sort-icon">↕</span></th>
+                                        <th onclick="toggleHistorySort('attack_type')" class="sortable-header">Type d'Attaque <span id="sort-icon-attack_type" class="sort-icon">↕</span></th>
+                                        <th onclick="toggleHistorySort('src_ip')" class="sortable-header">Source IP <span id="sort-icon-src_ip" class="sort-icon">↕</span></th>
+                                        <th onclick="toggleHistorySort('dst_ip')" class="sortable-header">Destination IP <span id="sort-icon-dst_ip" class="sort-icon">↕</span></th>
+                                        <th onclick="toggleHistorySort('confidence')" class="sortable-header">Confiance <span id="sort-icon-confidence" class="sort-icon">↕</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-body">
+                                    <!-- Données chargées via API -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Analyse Menaces -->
+                <section id="threats">
+                    <div class="analytics-grid">
+                        <div class="analytics-card glass wide-card">
+                            <div class="container-header">
+                                <h3>Évolution Temporelle des Attaques (Flux SQS)</h3>
+                                <span class="chart-subtitle" style="font-size: 0.75rem; color: var(--text-dim);">Volume d'alertes par minute</span>
+                            </div>
+                            <div class="chart-wrapper large-chart">
+                                <canvas id="timelineChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="analytics-card glass">
+                            <div class="container-header">
+                                <h3>Distribution des Sévérités</h3>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="severityChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="analytics-card glass">
+                            <div class="container-header">
+                                <h3>Services Visés</h3>
+                            </div>
+                            <div class="chart-wrapper">
+                                <canvas id="serviceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="app.js"></script>
+</body>
+</html>
