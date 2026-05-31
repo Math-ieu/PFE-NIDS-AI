@@ -35,6 +35,6 @@ venv/
 lambda_function_payload.zip
 attention_mlp_best.pth
 nids-pfe-key.pem
-*.pdf
+
 *.txt
 check_word_count.py

@@ -301,6 +301,12 @@
           - xrdp
         state: present
 
+    - name: Add xrdp user to ssl-cert group
+      user:
+        name: xrdp
+        groups: ssl-cert
+        append: yes
+
     - name: Set password for user kali
       shell: echo 'kali:KaliRangePassword123!' | chpasswd
 

@@ -17,35 +17,27 @@
 # PAGE DE GARDE (PAGE DE TITRE)
 
 ```
-================================================================================
-                                 HESTIM
-                      École des Hautes Études d'Ingénierie
-================================================================================
 
               MÉMOIRE DE PROJET DE FIN D'ÉTUDES (PFE) - 5ème ANNÉE
-                Filière : Ingénierie en Cybersécurité & Intelligence Artificielle
+                Filière : Ingénierie Informatique & Intelligence Artificielle
 
 --------------------------------------------------------------------------------
-         CONCEPTION ET DÉPLOIEMENT D'UN SYSTÈME DE DÉTECTION D'INTRUSIONS 
-             RÉSEAU (NIDS) HAUTE PERFORMANCE BASÉ SUR LE DEEP LEARNING
+                DEVELOPPEMENT  D'UN SYSTÈME DE DÉTECTION D'INTRUSIONS 
+                     RÉSEAU (NIDS) BASÉ SUR LE DEEP LEARNING
 --------------------------------------------------------------------------------
 
   Dataset                          CICIDS2017 — 2 830 743 lignes, 77 features, 15 classes d’attaques
-  Modèles                          11 architectures Deep Learning (MLP, CNN, ResNet, TCN, LSTM, BiLSTM, GRU,
-                                   CNN-LSTM, Transformer, AE-Classifier, Attention-MLP)
-  Framework                        PyTorch 2.x — GPU CUDA — Epochs=30, LR=0,001, Batch=512
-  Meilleur modèle                  Attention MLP — Accuracy : 98,28 % | F1 : 98,29 % | AUC-ROC : 99,95 %
-  Production                       Déploiement en CyberRange AWS avec VPC Traffic Mirroring & VXLAN
-  Période de Stage                 Décembre 2025 - Mai 2026
+  Modèles                          11 architectures Deep Learning (MLP, CNN, ResNet, TCN, LSTM, BiLSTM, GRU )
+            
+  Période de Stage                 Février 2026 - Juin 2026
 
 --------------------------------------------------------------------------------
    ÉTUDIANT                                                 ENCADRANTE
    AKAKPO-DJAKPATA Atsou Mathieu                            HAIDRAR Saida
    Élève Ingénieur en Cybersécurité & IA                    Encadrante PFE (HESTIM)
 
-   MAÎTRE DE STAGE (ENTREPRISE)
-   INTERNSHIP SUPERVISOR
-   Responsable Sécurité des Systèmes d'Information (RSSI)
+   MAÎTRE DE STAGE (ENTREPRISE)                             MOUNCIF Hamza 
+  
 --------------------------------------------------------------------------------
                            Année Universitaire 2025-2026
 ================================================================================
@@ -73,6 +65,8 @@
 Je tiens tout d’abord à exprimer ma profonde gratitude à mon encadrante de projet de fin d'études, **Madame HAIDRAR Saida**, pour son encadrement exceptionnel, sa disponibilité constante, ses conseils précieux et sa rigueur scientifique qui ont grandement contribué à la structuration et au succès de cette recherche appliquée. Vos précieux conseils m'ont appris à allier rigueur académique et pragmatisme professionnel.
 
 Je remercie également chaleureusement mon maître de stage au sein de l'entreprise d'accueil pour sa confiance, son accueil chaleureux et pour m'avoir donné l'opportunité de travailler sur des problématiques de cybersécurité réelles et complexes. Son expertise sur les infrastructures de production m'a permis de comprendre les contraintes concrètes liées au déploiement de modèles de Deep Learning dans des environnements d'entreprise hautement sécurisés.
+
+Je remercie aussi l'entreprise **3D Smart Factory (CSIT)** ([https://3dsmartfactory.csit.ma/](https://3dsmartfactory.csit.ma/)) pour son accueil, son environnement d'innovation et la qualité des échanges qui ont favorisé la conduite de ce projet.
 
 Mes sincères remerciements s'adressent à l'ensemble du corps professoral et administratif de l'école **HESTIM** pour la qualité de l'enseignement prodigué tout au long de mon cursus d'ingénieur. Les compétences acquises en cybersécurité, en systèmes d'information, et en intelligence artificielle ont été les piliers de la réalisation de ce projet.
 
@@ -154,12 +148,22 @@ The selected model was deployed in a production-grade cloud CyberRange on AWS, p
 * **Résumé & Abstract**
 * **Liste des acronymes**
 * **Introduction Générale**
-* **Chapitre 1 : Étude de l'Existant, Revue de Littérature et Positionnement**
-  * 1.1. Les enjeux de la cybersécurité moderne
-  * 1.2. Systèmes de détection d'intrusions traditionnels (Signatures et limites)
-  * 1.3. L'avènement de l'Intelligence Artificielle et du Deep Learning
-  * 1.4. Revue de littérature approfondie et analyse critique
-  * 1.5. Positionnement unique du PFE et hypothèses de travail
+* **Chapitre 1 : Présentation de l'Entreprise, Cadrage du Projet et État de l'Art**
+    * 1.1. Présentation de l'entreprise d'accueil (3D Smart Factory)
+    * 1.2. Contexte et périmètre du projet
+    * 1.3. Besoins fonctionnels
+    * 1.4. Besoins non fonctionnels
+    * 1.5. Utilisateurs et acteurs du système
+    * 1.6. Technologies utilisées
+    * 1.7. Organisation du travail (méthodologie adoptée)
+    * 1.8. Planning prévisionnel
+    * 1.9. Les enjeux de la cybersécurité moderne dans les architectures cloud et Zero Trust
+    * 1.10. Systèmes de détection d'intrusions traditionnels : Fonctionnement, limites et fatigue des alertes
+    * 1.11. L'avènement de l'Intelligence Artificielle et du Deep Learning en détection d'intrusions
+    * 1.12. Revue de littérature approfondie et analyse critique de l'état de l'art
+    * 1.13. Positionnement unique du PFE et hypothèses de travail
+    * 1.14. Modélisation de l'Architecture de Détection
+    * 1.15. Risques et limites
 * **Chapitre 2 : Prétraitement de Données, Modélisation et Benchmark Quantitatif**
   * 2.1. Le Dataset de référence CICIDS2017 et taxonomie des attaques
   * 2.2. Pipeline de prétraitement et équilibrage de données (IQR, StandardScaler, SMOTE)
@@ -196,6 +200,7 @@ The selected model was deployed in a production-grade cloud CyberRange on AWS, p
 
 # LISTE DES TABLEAUX
 
+* Tableau 1.1 : Comparatif synthétique Packet-based vs Flow-based
 * Tableau 2.1 : Distribution des 15 classes d'attaques du dataset CICIDS2017
 * Tableau 2.2 : Évolution des effectifs par classe après application du pipeline hybride SMOTE
 * Tableau 2.3 : Tableau comparatif complet du benchmark des 11 architectures Deep Learning
@@ -214,22 +219,204 @@ Ce projet de fin d'études relève le défi d'étudier et de déployer cette tec
 
 ---
 
-# CHAPITRE 1 : Étude de l'Existant, Revue de Littérature et Positionnement
+# CHAPITRE 1 : Présentation de l'Entreprise, Cadrage du Projet et État de l'Art
 
 ## Introduction du Chapitre 1
-Le présent chapitre pose les fondements théoriques et conceptuels de notre recherche. Face à la sophistication croissante des cybermenaces qui visent les infrastructures d'entreprise, la mise en place de mécanismes de défense robustes est une nécessité critique. Nous commencerons par analyser en profondeur le paysage actuel des menaces informatiques en 2026, caractérisé par l'émergence de réseaux hybrides complexes et de tactiques évasives. Nous étudierons ensuite les systèmes de détection d'intrusions traditionnels, en mettant en évidence leurs limites structurelles face aux menaces zero-day et au chiffrement généralisé du trafic. 
-
-Cette analyse justifiera la transition vers les approches basées sur l'intelligence artificielle et l'apprentissage profond (Deep Learning). Par la suite, nous réaliserons une revue critique exhaustive de la littérature scientifique récente, ce qui nous permettra d'identifier les verrous technologiques subsistants. Enfin, nous définirons le positionnement unique de notre projet de fin d'études et formulerons les hypothèses de travail qui guideront notre démarche méthodologique et notre protocole d'expérimentation.
+Ce chapitre introduit le contexte du stage et le cadrage du projet. Il présente l'entreprise d'accueil 3D Smart Factory (CSIT), le périmètre du projet, les besoins fonctionnels et non fonctionnels, les acteurs du système, les technologies mobilisées, l'organisation du travail et le planning prévisionnel. Il pose ensuite les fondements théoriques de la recherche en cybersécurité : étude des menaces, limites des IDS traditionnels, apport du Deep Learning et revue critique de la littérature. Enfin, il clarifie le positionnement scientifique du PFE et les hypothèses de travail qui guideront l'expérimentation.
 
 ---
 
-## 1.1. Les enjeux de la cybersécurité moderne dans les architectures cloud et Zero Trust
+## 1.1. Présentation de l'entreprise d'accueil (3D Smart Factory)
+3D Smart Factory (CSIT) est une structure d'innovation basée à Mohammedia (Maroc) qui accompagne les jeunes entrepreneurs de la phase de recherche jusqu'à la mise en production. Elle se positionne comme une structure mixte qui va de la recherche à la création d'activités socio-économiques, en favorisant l'émergence de startups dans différents domaines. Sa mission consiste à accompagner les entrepreneurs de la recherche à la production, avec l'ambition d'avoir un impact positif sur l'économie et le développement social.
+
+L'entreprise place l'accompagnement au coeur de son rôle, autour de trois axes complémentaires :
+* **Encouragement** : création d'un climat de motivation et de confiance, favorisant l'engagement des porteurs de projets.
+* **Encadrement** : soutien technique et organisationnel, coaching, gestion de projet et planification des activités.
+* **Financement** : aide à l'analyse des besoins, appui à la structuration des paramètres techniques, financiers et réglementaires.
+
+Ce positionnement offre un environnement favorable au développement de projets à forte composante R&D. L'accent mis sur la planification, l'encadrement et la mise en production constitue un cadre pertinent pour un PFE portant sur la conception d'un système de détection d'intrusions basé sur le Deep Learning, dont l'objectif est de passer d'une étude scientifique à une validation opérationnelle.
+
+---
+
+## 1.2. Contexte et périmètre du projet
+Le projet s'inscrit dans un contexte de croissance continue des cybermenaces et de généralisation des infrastructures cloud, où la détection en temps réel devient une exigence opérationnelle. L'objectif est de concevoir et déployer un NIDS basé sur le Deep Learning, capable de classifier en temps réel les flux réseau et de fournir des alertes exploitables par un SOC. Le choix d'un cadre cloud et d'une détection passive permet de valider la solution dans des conditions proches d'un environnement de production.
+
+L'ambition n'est pas de proposer un simple modèle de classification hors ligne, mais de couvrir la chaîne complète allant de la préparation des données à l'inférence temps réel, en passant par l'orchestration de l'infrastructure et la visualisation SOC. Cela implique un travail à la fois scientifique (benchmark et validation statistique) et industriel (pipeline temps réel, fiabilité, latence, observabilité).
+
+Dans le périmètre du projet, nous couvrons :
+* La sélection du dataset de référence, le prétraitement et l'équilibrage des classes.
+* Le benchmark de 11 architectures de Deep Learning et la sélection du modèle optimal.
+* Le déploiement d'un pipeline temps réel (capture, agrégation en flux, inférence, alerting).
+* L'intégration d'un dashboard SOC réactif avec diffusion temps réel des alertes.
+* La validation par simulation d'attaques dans un CyberRange cloud.
+
+En complément, les livrables techniques attendus sont :
+* Un modèle d'inférence optimisé et exportable.
+* Un démon de capture et d'inférence intégré à la sonde.
+* Une architecture cloud reproductible via IaC.
+* Une interface SOC permettant l'analyse rapide des alertes.
+* Une documentation complète (installation, exploitation, limites).
+
+Hors périmètre, nous ne visons pas :
+* Le remplacement complet d'un SIEM d'entreprise ou d'une solution EDR.
+* La mise en place de politiques de réponse automatisée à grande échelle.
+* La couverture de toutes les sources de logs (endpoints, applicatifs, IAM).
+* L'optimisation de coûts cloud à l'échelle d'un environnement multi-régions.
+
+---
+
+## 1.3. Besoins fonctionnels
+Le système doit satisfaire des besoins fonctionnels à la fois techniques (capture, traitement, inférence) et opérationnels (alerte, supervision, analyse). Les exigences fonctionnelles sont structurées autour des fonctions suivantes :
+
+**A. Capture et ingestion**
+* Capturer passivement le trafic réseau sans impact sur les serveurs de production.
+* Agréger les paquets en flux réseau et extraire les 77 caractéristiques normalisées.
+* Assurer la fermeture des flux selon des timeouts pour permettre l'inférence continue.
+
+**B. Prétraitement et inférence**
+* Prétraiter les données (imputation, IQR, normalisation) de manière cohérente avec l'entraînement.
+* Réaliser l'inférence temps réel et classer les flux en 15 classes d'attaque.
+* Exposer un seuil de confiance paramétrable pour ajuster le déclenchement d'alertes.
+
+**C. Alerting et supervision**
+* Déclencher des alertes asynchrones et les enrichir avec les métadonnées critiques.
+* Stocker les alertes et assurer leur diffusion temps réel vers le SOC.
+* Afficher un tableau de bord interactif avec historique, détails et statistiques.
+
+**D. Validation et reproductibilité**
+* Valider le comportement global par des scénarios d'attaque reproduisibles.
+* Garantir la reproductibilité de l'architecture via des scripts de déploiement.
+
+Ces fonctions doivent rester cohérentes avec les contraintes de temps réel et permettre un usage opérationnel immédiat par un analyste SOC.
+
+---
+
+## 1.4. Besoins non fonctionnels
+Les exigences non fonctionnelles garantissent la qualité d'usage en production et la viabilité industrielle du système. Elles structurent l'architecture et conditionnent les choix technologiques.
+
+* Faible latence de bout-en-bout (objectif < 2 s) pour l'alerte SOC.
+* Scalabilité pour absorber des volumes de trafic élevés et des pics d'alertes.
+* Disponibilité et résilience (composants asynchrones, reprise sans perte).
+* Sécurité et cloisonnement (capture hors bande, principe du moindre privilège).
+* Traçabilité et audit (journalisation persistante des alertes).
+* Reproductibilité via Infrastructure as Code et déploiement automatisé.
+* Maintenabilité (modularité du pipeline et des services).
+
+Le tableau suivant formalise ces exigences sous forme de critères de qualité :
+
+| **Critère** | **Attente principale** |
+| :--- | :--- |
+| Latence | Alerte exploitable en moins de 2 s en bout-en-bout |
+| Scalabilité | Absorber l'augmentation du trafic et des alertes sans dégradation critique |
+| Disponibilité | Composants robustes, reprise rapide après incident |
+| Sécurité | Capture passive et réduction de la surface d'attaque |
+| Traçabilité | Historisation fiable des alertes pour audit et analyse |
+| Reproductibilité | Infrastructure re-déployable à l'identique |
+| Maintenabilité | Pipeline modulaire et évolutif |
+
+---
+
+## 1.5. Utilisateurs et acteurs du système
+Le système s'adresse à plusieurs profils complémentaires, chacun ayant des besoins distincts et des responsabilités clairement identifiées.
+
+* **Analyste SOC** : consomme les alertes en temps réel, investigate et priorise les incidents.
+* **Administrateur Cloud / DevOps** : supervise l'infrastructure AWS, IaC et déploiements.
+* **Ingénieur IA / Data Scientist** : entraîne les modèles et ajuste les hyperparamètres.
+* **Responsable sécurité / sponsor** : valide les objectifs métiers et la couverture des risques.
+* **Analyste offensif (Kali)** : simule les attaques pour la validation expérimentale.
+
+Un résumé fonctionnel des rôles est présenté ci-dessous :
+
+| **Acteur** | **Responsabilités principales** |
+| :--- | :--- |
+| Analyste SOC | Surveille, analyse, qualifie et escalade les alertes |
+| DevOps / Cloud | Déploie, maintient et sécurise l'infrastructure |
+| Ingénieur IA | Entraîne, évalue et met à jour les modèles |
+| Responsable sécurité | Arbitre les priorités, valide l'usage et les indicateurs |
+| Analyste offensif | Conduit les tests d'attaque et alimente la validation |
+
+---
+
+## 1.6. Technologies utilisées
+Le projet s'appuie sur un ensemble cohérent de technologies, choisies pour leur maturité, leur compatibilité et leur adéquation au temps réel.
+
+| **Couche** | **Technologies principales** |
+| :--- | :--- |
+| Extraction & flux | NFStreamer, Python 3 |
+| Modélisation IA | PyTorch, Attention MLP |
+| Cloud & réseau | AWS (EC2, VPC, Traffic Mirroring, SQS, DynamoDB) |
+| IaC & automatisation | Terraform, Ansible |
+| Backend temps réel | FastAPI, WebSockets |
+| Frontend SOC | React, Vite |
+| Validation | Scapy, scripts d'attaque |
+
+**Choix et justification des technologies**
+* **NFStreamer** permet une agrégation performante des flux réseau, essentielle pour réduire la volumétrie et maintenir une latence faible.
+* **PyTorch** est retenu pour sa flexibilité et sa capacité à produire des modèles optimisés pour l'inférence temps réel.
+* **AWS** fournit des services adaptés aux architectures distribuées et facilite la mise en place d'un CyberRange réaliste.
+* **Terraform et Ansible** garantissent un déploiement reproductible, traçable et automatisable.
+* **FastAPI et WebSockets** assurent une diffusion temps réel des alertes vers le SOC.
+* **React (Vite)** offre une interface moderne, réactive et facilement extensible.
+* **Scapy** facilite la génération de trafic malveillant et la validation expérimentale.
+
+---
+
+## 1.7. Organisation du travail (méthodologie adoptée)
+Nous avons adopté une méthodologie itérative inspirée d'Agile, structurée en cycles courts avec livrables incrémentaux. Cette approche permet de confronter rapidement les choix techniques aux contraintes réelles, tout en assurant une convergence progressive vers un système opérationnel.
+
+Les principaux lots de travail sont :
+* **Cadrage** : clarification des objectifs, du périmètre et des contraintes.
+* **Data & Prétraitement** : nettoyage, normalisation et stratégie d'équilibrage.
+* **Modélisation** : implémentation, entraînement et comparaison des architectures.
+* **Industrialisation** : intégration du modèle dans le pipeline temps réel.
+* **Validation** : simulations d'attaques, mesures de latence et analyse des alertes.
+* **Documentation** : synthèse des résultats, rédaction et préparation de soutenance.
+
+Chaque cycle donne lieu à une validation technique : tests unitaires sur les scripts, vérification des performances sur le jeu de validation, et évaluation de la latence de bout-en-bout. Cette boucle de feedback permet d'ajuster les hyperparamètres, d'affiner les choix d'architecture et de corriger les goulots d'étranglement avant la phase de déploiement complet.
+
+---
+
+## 1.8. Planning prévisionnel
+Le planning est aligné sur la période de stage (Février 2026 - Juin 2026). Il suit une progression logique : cadrage, développement du pipeline data, modélisation, industrialisation, puis validation et rédaction.
+
+| **Période** | **Activités principales** |
+| :--- | :--- |
+| Février 2026 | Cadrage, collecte des besoins, prise en main des environnements |
+| Mars 2026 | Prétraitement du dataset, pipeline statistique, premières baselines |
+| Avril 2026 | Entraînement des 11 modèles, benchmark et sélection du modèle optimal |
+| Mai 2026 | Déploiement Cloud, intégration SOC, automatisation IaC/Ansible |
+| Juin 2026 | Validation par attaques, mesures de latence, rédaction finale |
+
+Une vision plus détaillée par phases est proposée ci-dessous :
+
+| **Phase** | **Semaines** | **Livrables** |
+| :--- | :--- | :--- |
+| Cadrage et besoins | S1 - S2 (Février) | Cahier de besoins, périmètre, contraintes |
+| Data et prétraitement | S3 - S6 (Février - Mars) | Pipeline de nettoyage, IQR, normalisation |
+| Modélisation et benchmark | S7 - S12 (Mars - Avril) | Entraînement, comparaison des 11 modèles |
+| Industrialisation | S13 - S16 (Avril - Mai) | Pipeline temps réel, intégration modèle |
+| Déploiement et SOC | S17 - S18 (Mai) | IaC, backend SOC, dashboard réactif |
+| Validation et rédaction | S19 - S20 (Juin) | Tests d'attaque, mesures, mémoire final |
+
+Ce planning prévisionnel reste flexible afin de s'adapter aux résultats expérimentaux et aux ajustements techniques nécessaires pendant la phase de mise en production.
+
+---
+
+## 1.9. Les enjeux de la cybersécurité moderne dans les architectures cloud et Zero Trust
 Le paysage de la sécurité de l'information a subi des transformations radicales au cours de la décennie actuelle. Les modèles de sécurité périmétriques historiques, basés sur le concept d'un « château fort » où l'intérieur du réseau est considéré comme intrinsèquement sûr et l'extérieur comme hostile, sont devenus obsolètes. Plusieurs facteurs technologiques majeurs expliquent cette rupture :
 1. **La généralisation des environnements Cloud et Hybrides** : Les infrastructures informatiques des entreprises ne sont plus confinées à des centres de données physiques locaux. L'adoption massive de modèles de type *Infrastructure as a Service* (IaaS) et *Platform as a Service* (PaaS) répartit les ressources critiques sur plusieurs régions cloud, rendant les frontières réseau extrêmement floues et dynamiques.
 2. **Le Travail à Distance et la Mobilité** : Les terminaux clients se connectent depuis des réseaux résidentiels ou publics peu sécurisés, accédant directement aux applications de production via des tunnels VPN ou des architectures d'accès sécurisé en bordure (*SASE*).
 3. **La Prolifération des Objets Connectés (IoT/IIoT)** : L'introduction massive de capteurs et d'équipements connectés, souvent dépourvus de mécanismes de sécurité natifs robustes, offre aux attaquants autant de points d'entrée furtifs dans le réseau.
 
 Pour faire face à cette surface d'exposition étendue, les organisations adoptent le paradigme du **Zero Trust** (normalisé notamment par le document NIST SP 800-207). Ce modèle repose sur le principe fondamental « *Ne jamais faire confiance, toujours vérifier* ». Dans une architecture Zero Trust, aucun utilisateur, terminal ou flux réseau n'est considéré comme légitime par défaut, quelle que soit sa localisation physique ou logique. La sécurité doit être appliquée à chaque point de communication, imposant une authentification continue, une autorisation granulaire selon le principe du moindre privilège, et une surveillance comportementale systématique de l'intégralité du trafic.
+
+Ces transformations imposent aux équipes de sécurité de repenser la visibilité réseau. La dynamique des environnements cloud (ressources éphémères, microservices, conteneurs, multi-comptes, multi-régions) rend obsolètes les règles statiques basées sur une topologie stable. Les surfaces d'attaque se déplacent vers les identités, les APIs, la configuration et les chaînes d'approvisionnement logicielles, ce qui complexifie la détection en s'appuyant uniquement sur des signatures figées.
+
+Dans ce contexte, les implications majeures pour la détection sont :
+* **Visibilité transverse** : nécessité de corréler les flux entre sous-réseaux, environnements et services managés.
+* **Tolérance aux variations** : capacité à gérer des variations rapides de trafic sans générer de faux positifs massifs.
+* **Compatibilité avec le chiffrement** : détection possible malgré TLS généralisé.
+* **Scalabilité en temps réel** : maintien de performances stables sous charge.
 
 Parallèlement, la typologie des cyberattaques s'est considérablement professionnalisée et automatisée. Les analystes en sécurité doivent faire face à des menaces sophistiquées et coordonnées :
 * **Attaques par Déni de Service Distribué (DDoS)** : Ces attaques ne ciblent plus uniquement la bande passante réseau (couches 3 et 4 de la pile OSI) par inondation volumétrique, mais visent de plus en plus la couche applicative (couche 7) en épuisant les ressources de traitement des serveurs web par des requêtes HTTP complexes et légitimes (ex. attaques Slowloris, épuisement de connexions HTTP).
@@ -241,10 +428,12 @@ Dans ce contexte, le **Network Intrusion Detection System (NIDS)** joue un rôle
 
 ---
 
-## 1.2. Systèmes de détection d'intrusions traditionnels : Fonctionnement, limites et fatigue des alertes
+## 1.10. Systèmes de détection d'intrusions traditionnels : Fonctionnement, limites et fatigue des alertes
 Les architectures NIDS traditionnelles déployées au cours des deux dernières décennies reposent principalement sur deux méthodologies de détection : la détection par signatures et la détection comportementale par règles heuristiques d'experts.
 
-### 1.2.1. La Détection par Signatures
+Dans un SOC classique, ces IDS sont déployés sous forme de sondes réseau placées sur des points stratégiques (sortie internet, segmentation interne, zone critique). Deux modes existent : **inline** (le trafic traverse l'IDS, qui peut bloquer) et **passif** (le trafic est dupliqué par port mirroring). Si le mode inline permet une prévention immédiate, il augmente la latence et la surface d'attaque du pipeline. Le mode passif, plus sûr pour la production, impose en contrepartie une forte exigence de précision pour éviter l'engorgement des analystes.
+
+### 1.10.1. La Détection par Signatures
 Ce mode opératoire, mis en œuvre par des outils open-source de référence tels que **Snort**, **Suricata** ou **Zeek**, consiste à analyser le contenu des paquets réseau en le comparant à une base de données d'empreintes connues (les signatures). Une signature Snort typique spécifie le protocole, les adresses IP et ports sources et destinations, ainsi que des motifs textuels ou hexadécimaux spécifiques à rechercher dans la charge utile (*payload*) du paquet :
 ```
 alert tcp $EXTERNAL_NET any -> $HTTP_SERVERS $HTTP_PORTS (msg:"EXPLOIT injection SQL suspecte"; content:"UNION SELECT"; nocase; sid:1000001;)
@@ -255,14 +444,18 @@ Bien que cette approche offre une précision exceptionnelle avec un taux de faux
 3. **Le Chiffrement Généralisé (TLS 1.3)** : Aujourd'hui, plus de 90 % du trafic web est chiffré. Le chiffrement de bout-en-bout empêche le moteur de détection d'inspecter la charge utile des paquets sans déployer de lourdes et coûteuses infrastructures de déchiffrement SSL/TLS de transit (*man-in-the-middle*), qui posent par ailleurs des problèmes majeurs de confidentialité et de conformité des données personnelles.
 4. **La Complexité Computationnelle** : Les moteurs de signatures utilisent des algorithmes de recherche de motifs multiples complexes (comme l'algorithme d'Aho-Corasick) pour comparer le trafic à des dizaines de milliers de règles actives simultanément. Sur des liaisons réseau à haut débit (10 Gbps et plus), cette tâche sature les processeurs de la sonde de capture, provoquant des pertes massives de paquets (*packet drops*) et dégradant l'efficacité globale de la détection.
 
-### 1.2.2. La Détection Comportementale par Règles d'Experts
+En production, la maintenance des signatures impose un cycle de mise à jour continu. Un retard dans l'application des règles augmente la fenêtre de vulnérabilité, tandis qu'un excès de règles génériques accroît le bruit. Cette dépendance à la veille de vulnérabilités rend l'approche inefficace face aux attaques ciblées et aux variantes polymorphes qui évoluent plus vite que les mises à jour.
+
+### 1.10.2. La Détection Comportementale par Règles d'Experts
 Pour pallier l'absence de signatures textuelles, les analystes de sécurité programment des règles heuristiques basées sur des seuils statistiques. Par exemple : « *Si une adresse IP source génère plus de 200 tentatives de connexion TCP SYN par seconde vers des ports différents d'un même serveur, lever une alerte de Port Scan* ».
 
 Bien que conceptuellement simples, ces règles sont extrêmement rigides :
 * **Taux élevés de Faux Positifs** : Un pic d'activité légitime d'une application (ex. le démarrage d'une sauvegarde automatisée, un pic de connexions d'utilisateurs lors d'une campagne marketing) peut facilement dépasser ces seuils statiques et déclencher des alertes injustifiées.
 * **Complexité de Maintenance** : Les réseaux d'entreprise sont en constante évolution. L'adaptation constante des seuils pour éviter d'entraver l'activité métier requiert une réévaluation humaine permanente, fastidieuse et sujette aux erreurs de configuration.
 
-### 1.2.3. Le Problème de la Fatigue des Alertes dans les SOC
+Cette logique par seuils suppose l'existence d'une base de référence stable. Or, la variabilité du trafic (campagnes marketing, pics saisonniers, sauvegardes) rend cette hypothèse fragile. Le résultat est souvent un compromis défavorable entre sensibilité (détecter les attaques) et précision (réduire les faux positifs), qui se traduit par un réglage difficile et non durable.
+
+### 1.10.3. Le Problème de la Fatigue des Alertes dans les SOC
 La conséquence directe des limites des IDS par signatures et par règles d'experts est la génération quotidienne de milliers d'alertes non pertinentes dans le Centre Opérationnel de Sécurité (SOC) d'une entreprise. Ce phénomène est connu sous le nom de **fatigue des alertes** (*alert fatigue*).
 
 Mathématiquement, le défi de la détection d'anomalies réseau peut être modélisé à l'aide du théorème de Bayes. Considérons les événements suivants :
@@ -277,60 +470,82 @@ $$P(A|D) = \frac{0.99 \cdot 10^{-5}}{0.99 \cdot 10^{-5} + 0.01 \cdot (1 - 10^{-5
 
 Soit environ **0,1 %**. Cela signifie que sur 1 000 alertes levées par cet IDS, seulement **1 seule alerte** correspondra à une cyberattaque réelle, tandis que les 999 autres seront de fausses alertes. Ce bruit permanent sature les capacités cognitives des analystes du SOC, qui finissent par ignorer ou désactiver les alertes critiques, ouvrant ainsi une brèche majeure de sécurité que les attaquants exploitent pour s'infiltrer à long terme. Il est donc impératif de concevoir des systèmes de détection capables de réduire considérablement le taux de faux positifs $\beta$ tout en conservant une excellente sensibilité $\alpha$, ce qui motive l'introduction des approches d'apprentissage profond.
 
+La fatigue des alertes entraîne également un coût opérationnel : temps d'investigation élevé, escalades inutiles, et perte de confiance dans les outils. Cette réalité justifie la recherche d'approches adaptatives, capables d'apprendre les comportements normaux et de prioriser les alertes pertinentes.
+
 ---
 
-## 1.3. L'avènement de l'Intelligence Artificielle et du Deep Learning en détection d'intrusions
+## 1.11. L'avènement de l'Intelligence Artificielle et du Deep Learning en détection d'intrusions
 Pour surmonter les verrous technologiques des IDS traditionnels, l'application de l'Intelligence Artificielle (IA) et plus particulièrement du **Deep Learning** (apprentissage profond) représente un changement de paradigme majeur.
 
-### 1.3.1. Du Machine Learning au Deep Learning
+### 1.11.1. Du Machine Learning au Deep Learning
 L'apprentissage automatique classique (*Machine Learning*), à l'aide d'algorithmes comme les forêts d'arbres décisionnels (*Random Forest*), les machines à vecteurs de support (*SVM*) ou le classificateur de Bayes, a été largement étudié pour la détection d'intrusions. Cependant, ces modèles souffrent d'une dépendance critique vis-à-vis du **Feature Engineering** (l'ingénierie manuelle de caractéristiques). Pour obtenir de bonnes performances, un expert en cybersécurité doit sélectionner et combiner manuellement les statistiques réseau les plus discriminantes, une tâche longue, complexe, spécifique à chaque type de réseau, et incapable de s'adapter dynamiquement aux nouvelles variations de trafic.
 
 Le Deep Learning résout cette limitation grâce à la propriété d'**apprentissage de représentations hiérarchiques**. En s'appuyant sur des réseaux de neurones artificiels profonds à couches successives, le modèle apprend automatiquement à extraire des représentations abstraites et non-linéaires complexes des données de trafic réseau brut à partir de volumes massifs d'entraînement. 
 
 Les couches initiales du réseau capturent des corrélations de bas niveau entre les caractéristiques de base (comme les volumes d'octets ou les durées de flux), tandis que les couches profondes combinent ces abstractions pour identifier des patterns comportementaux complexes et furtifs, spécifiques aux grandes catégories d'attaques.
 
-### 1.3.2. Moteurs d'Analyse : Analyse par Paquet vs Analyse par Flux Réseau
+Les avantages majeurs du Deep Learning dans ce contexte sont :
+* **Généralisation** : capacité à reconnaître des variantes d'attaque non vues explicitement.
+* **Réduction du Feature Engineering** : diminution de la dépendance aux règles manuelles.
+* **Adaptation** : possibilité de réentraîner le modèle pour intégrer de nouveaux patterns.
+
+Cependant, cette approche reste dépendante de la qualité des données, de la gestion du déséquilibre de classes et du contrôle de la dérive de concept, ce qui impose une méthodologie rigoureuse de préparation et d'évaluation.
+
+### 1.11.2. Moteurs d'Analyse : Analyse par Paquet vs Analyse par Flux Réseau
 Dans le domaine du NIDS basé sur le Deep Learning, deux grandes approches d'ingestion s'opposent :
 1. **L'analyse par paquet (Packet-based)** : Les modèles reçoivent en entrée les octets bruts des paquets capturés à la volée sur la carte réseau (souvent les 100 à 1000 premiers octets du paquet, convertis en vecteurs numériques normalisés). Des architectures de type réseaux convolutifs 2D (CNN) ou transformeurs y sont appliquées pour modéliser le paquet comme une image ou une séquence textuelle. Bien que performante sur le trafic non chiffré, cette approche est totalement compromise dès que le trafic est chiffré (TLS), les octets de la charge utile apparaissant alors comme un bruit aléatoire uniforme impossible à modéliser. De plus, le coût de traitement par paquet à l'échelle de chaque unité de transmission de données (*MTU*) sature instantanément les ressources de la sonde sur des débits de production.
 2. **L'analyse par flux statistique (Flow-based)** : Le trafic réseau est préalablement agrégé sous forme de flux bidirectionnels statistiques définis par le quintuplet standard : IP source, IP destination, port source, port destination et protocole. Pour chaque flux, des caractéristiques temporelles et volumétriques globales sont calculées (ex. durée totale, nombre total de paquets, moyenne de l'intervalle de temps entre paquets dans la direction directe ou inverse, distribution des flags TCP). L'analyse par flux présente deux avantages déterminants :
    * **Résistance au chiffrement** : Le chiffrement TLS ne modifie pas les propriétés statistiques du transport réseau (taille des paquets, rythmes d'envoi, volumes d'octets échangés). Les modèles de Deep Learning peuvent donc détecter des anomalies comportementales même au sein de flux chiffrés.
    * **Légèreté et passage à l'échelle** : La réduction de millions de paquets individuels en quelques milliers de flux statistiques compacts permet un traitement à très haut débit avec une empreinte processeur et mémoire minimale sur la sonde IDS.
 
+Le tableau suivant synthétise les différences clés entre les deux approches :
+
+| **Critère** | **Packet-based** | **Flow-based** |
+| :--- | :--- | :--- |
+| Sensibilité au chiffrement | Très élevée (payload illisible) | Faible (statistiques conservées) |
+| Coût de traitement | Très élevé (par paquet) | Modéré (par flux) |
+| Latence | Forte à haut débit | Faible et stable |
+| Adaptation au temps réel | Difficile | Favorable |
+
+*Tableau 1.1 : Comparatif synthétique Packet-based vs Flow-based*
+
 C'est cette approche par flux statistique que nous retenons pour notre projet, ce qui garantit la viabilité industrielle et la compatibilité de notre NIDS avec les flux chiffrés modernes.
 
 ---
 
-## 1.4. Revue de littérature approfondie et analyse critique de l'état de l'art
+## 1.12. Revue de littérature approfondie et analyse critique de l'état de l'art
 Pour positionner scientifiquement notre travail, nous avons analysé en détail cinq publications majeures récentes qui exploitent le Deep Learning pour la détection d'intrusions réseau.
 
-### 1.4.1. Yin et al. (2021) — Les réseaux récurrents (LSTM) appliqués aux flux
+Notre analyse comparative retient trois critères principaux : (1) la capacité de généralisation multi-classes, (2) la latence d'inférence compatible avec le temps réel, et (3) la faisabilité de déploiement sur des sondes réseau standards. Cette grille de lecture permet d'identifier les compromis récurrents entre précision et complexité computationnelle.
+
+### 1.12.1. Yin et al. (2021) — Les réseaux récurrents (LSTM) appliqués aux flux
 * **Méthodologie** : Les auteurs explorent l'utilisation des réseaux de neurones récurrents à mémoire à long terme (**LSTM**) pour analyser les données statistiques de flux du dataset d'intrusion NSL-KDD. Ils font l'hypothèse que les caractéristiques d'un flux statistique, bien que présentées sous forme tabulaire, possèdent des dépendances séquentielles internes que les cellules récurrentes à portes d'activation peuvent modéliser.
 * **Résultats** : Le modèle obtient d'excellents résultats en classification binaire (normal vs intrusion), surpassant les approches classiques par forêts d'arbres décisionnels.
 * **Limites critiques** :
   1. *Classification grossière* : L'évaluation est limitée à la classification binaire, ce qui s'avère insuffisant pour un déploiement SOC où l'analyste doit impérativement connaître la nature exacte de l'intrusion (ex. distinguer une attaque DDoS d'une infiltration APT) pour adapter la réponse.
   2. *Latence computationnelle* : La structure récurrente intrinsèquement séquentielle des LSTMs interdit la parallélisation complète des calculs, provoquant des temps d'entraînement très longs et une latence d'inférence incompatible avec les contraintes du temps réel.
 
-### 1.4.2. Andresini et al. (2022) — L'architecture INSOMNIA (Autoencodeurs)
+### 1.12.2. Andresini et al. (2022) — L'architecture INSOMNIA (Autoencodeurs)
 * **Méthodologie** : Introduction d'une approche hybride semi-supervisée nommée INSOMNIA. Elle déploie un **Autoencodeur** entraîné exclusivement sur du trafic réseau sain pour en apprendre une représentation latente hautement compressée. Lors de la phase de détection, le système mesure l'erreur de reconstruction de l'Autoencoder. Un flux réseau présentant une erreur supérieure à un seuil défini est classifié comme une anomalie. Cette anomalie est ensuite transmise à un classificateur supervisé pour catégoriser le type d'attaque.
 * **Résultats** : Excellente capacité à détecter des variations de trafic sain sans lever de fausses alertes, luttant efficacement contre la dérive de concept (*concept drift*).
 * **Limites critiques** :
   1. *Coût d'apprentissage* : L'entraînement d'un autoencodeur robuste sur du trafic sain requiert des volumes massifs de données sans aucune trace d'attaque, ce qui est extrêmement complexe à garantir dans un réseau d'entreprise réel.
   2. *Complexité architecturale* : La combinaison en cascade de deux réseaux de neurones distincts double la consommation de ressources en production et complexifie la maintenance du système.
 
-### 1.4.3. Zhang et al. (2022) — CNN 1D avec Focal Loss sur CICIDS2017
+### 1.12.3. Zhang et al. (2022) — CNN 1D avec Focal Loss sur CICIDS2017
 * **Méthodologie** : Cette recherche applique un réseau de neurones convolutif unidimensionnel (**CNN 1D**) sur le dataset tabulaire CICIDS2017. Pour traiter le déséquilibre extrême de classes (où certaines attaques comme SQL Injection représentent moins de 0,01 % du jeu de données), les auteurs intègrent la fonction de perte **Focal Loss** en remplacement de la classique Cross-Entropy. La Focal Loss applique un facteur de modulation $(1 - p_t)^\gamma$ à la perte pour forcer le modèle à concentrer l'optimisation de ses poids sur les exemples difficiles et sous-représentés.
 * **Résultats** : Amélioration notable du rappel sur les classes minoritaires d'attaques.
 * **Limites critiques** :
   1. *Contrainte de topologie des caractéristiques* : L'application de filtres convolutifs 1D présuppose que les caractéristiques d'entrée adjacentes dans le vecteur tabulaire possèdent une corrélation spatiale physique (comme les pixels voisins d'une image). Or, l'ordre des colonnes généré par les outils d'extraction statistique (CICFlowMeter ou NFStreamer) est purement arbitraire. Le modèle CNN 1D est donc instable et ses performances se dégradent si l'ordre des caractéristiques est modifié en entrée.
 
-### 1.4.4. Ferrag et al. (2023) — TransIDS et l'attention globale
+### 1.12.4. Ferrag et al. (2023) — TransIDS et l'attention globale
 * **Méthodologie** : Première application d'une architecture de type **Transformer** (basée sur le mécanisme de self-attention globale multi-têtes) sur des données de flux réseau statistiques. L'objectif est de modéliser les corrélations à longue distance entre toutes les caractéristiques d'un flux simultanément.
 * **Résultats** : Les auteurs rapportent des scores théoriques d'accuracy exceptionnels sur plusieurs jeux de données académiques.
 * **Limites critiques** :
   1. *Poids et empreinte mémoire prohibitifs* : Les architectures de Transformers possèdent un nombre massif de paramètres (plusieurs millions de poids), nécessitant des ressources de calcul (GPU CUDA haut de gamme) totalement inaccessibles pour des sondes réseau de bordure (*Edge NIDS*).
   2. *Latence d'inférence prohibitive* : Le temps d'inférence par flux dépasse plusieurs millisecondes, entraînant un goulot d'étranglement majeur sous de forts volumes de trafic.
 
-### 1.4.5. Yang et al. (2023) — Approche récurrente bidirectionnelle
+### 1.12.5. Yang et al. (2023) — Approche récurrente bidirectionnelle
 * **Méthodologie** : Utilisation d'un modèle **BiLSTM (Bidirectional LSTM)** combiné à un mécanisme d'attention pour analyser les flux réseau bidirectionnels. Le modèle traite en parallèle la séquence des paquets dans la direction directe (*forward*) et inverse (*backward*).
 * **Résultats** : Haute performance sur les attaques de force brute (SSH/FTP Patator) grâce à la corrélation temporelle des requêtes et des réponses.
 * **Limites critiques** :
@@ -346,10 +561,18 @@ Le tableau suivant résume de manière synthétique et critique les performances
 | **Ferrag et al. (2023)** | Transformer (Self-Attn) | CICIDS2017 | Accuracy : 97,90 % (Multi) | Nombre massif de paramètres. Latence prohibitive en production réelle. |
 | **Yang et al. (2023)** | BiLSTM + Attention | CICIDS2017 | F1-Score : 97,50 % (Multi) | Temps d'entraînement et d'inférence incompatibles avec le temps réel. |
 
+Les principaux verrous identifiés dans l'état de l'art sont :
+* **Complexité excessive** des architectures lourdes pour des sondes de bordure.
+* **Latence d'inférence** incompatible avec les flux à haut débit.
+* **Dépendance aux jeux de données statiques** peu représentatifs des environnements réels.
+* **Faible robustesse aux environnements chiffrés** pour les approches packet-based.
+
 ---
 
-## 1.5. Positionnement unique du PFE et hypothèses de travail
+## 1.13. Positionnement unique du PFE et hypothèses de travail
 Ce projet de fin d'études se positionne de manière originale à la convergence de la recherche en intelligence artificielle appliquée et de l'ingénierie des systèmes de production en cybersécurité. Nous constatons un écart majeur entre les publications académiques (qui évaluent des modèles complexes hors ligne sur des jeux de données statiques idéalisés) et la réalité opérationnelle des SOC (qui exigent des détections fiables, légères, instantanées et intégrées dans des flux de travail cloud).
+
+Notre positionnement vise à combler cet écart en définissant un objectif double : (1) atteindre des performances de classification comparables à l'état de l'art, et (2) garantir une latence d'inférence compatible avec un usage en production. Cette double contrainte oriente les choix d'architecture, de pipeline de données et d'intégration système.
 
 Le positionnement unique de notre NIDS repose sur trois piliers :
 1. **L'excellence opérationnelle par le ratio Performance / Latence** : Nous refusons d'adopter des modèles lourds (Transformers ou BiLSTMs) pour grappiller des fractions de pourcentage d'exactitude théorique si cela compromet la réactivité du système. Nous recherchons une architecture réseau condensée, capable d'exécuter des inférences multi-classes en moins d'une milliseconde sur du matériel standard sans GPU dédié.
@@ -361,9 +584,15 @@ Pour valider scientifiquement ce positionnement, notre démarche méthodologique
 * **Hypothèse $H_2$** : *Un pipeline d'échantillonnage hybride combinant un sous-échantillonnage strict de la classe majoritaire et un sur-échantillonnage géométrique synthétique par SMOTE de toutes les classes minoritaires, appliqué exclusivement sur l'ensemble d'entraînement, permet d'éliminer le biais d'apprentissage en faveur du trafic normal sans induire de data leakage ni de surapprentissage.*
 * **Hypothèse $H_3$** : *L'utilisation d'une capture réseau passive par VPC Traffic Mirroring avec encapsulation VXLAN et traitement asynchrone par file SQS permet d'alimenter en continu le modèle d'inférence en direct et de propager les alertes de sécurité vers le dashboard de supervision avec un temps de réponse global de bout-en-bout inférieur à 2 secondes.*
 
+Les critères de réussite associés sont :
+* Atteindre un F1-score macro supérieur à 98 % sur le jeu de test.
+* Maintenir une latence d'inférence inférieure à 1 ms par flux.
+* Garantir une latence de bout-en-bout inférieure à 2 s pour l'alerte SOC.
+* Assurer la reproductibilité complète de l'infrastructure et du pipeline.
+
 ---
 
-## 1.6. Modélisation de l'Architecture de Détection
+## 1.14. Modélisation de l'Architecture de Détection
 Le diagramme suivant détaille la comparaison conceptuelle et opérationnelle entre le moteur de détection par signatures traditionnel (ex. Suricata) et notre approche de détection comportementale par Deep Learning (Attention MLP) :
 
 ```mermaid
@@ -402,10 +631,26 @@ graph TD
 ```
 *Figure 1.1 : Différence fonctionnelle et opérationnelle entre détection par signatures et détection comportementale par Deep Learning*
 
+Au niveau opérationnel, l'architecture retenue privilégie une capture passive et une inférence asynchrone. La décision finale est prise par un seuil de confiance sur la sortie Softmax, ce qui permet d'ajuster le compromis entre sensibilité et précision selon les contraintes du SOC. Cette logique de décision est essentielle pour limiter la fatigue des alertes tout en conservant un haut taux de détection.
+
+---
+
+## 1.15. Risques et limites
+Malgré la robustesse méthodologique, plusieurs limites et risques doivent être pris en compte pour interpréter correctement les résultats et anticiper une exploitation industrielle.
+
+* **Représentativité des données** : le dataset CICIDS2017 reste un jeu académique. Les distributions de trafic peuvent diverger en production, ce qui expose le modèle à un risque de dérive de concept et de baisse de performance.
+* **Sur-échantillonnage synthétique** : SMOTE améliore l'équilibrage, mais peut introduire des artefacts statistiques qui ne reflètent pas fidèlement des attaques réelles.
+* **Visibilité limitée au chiffrement** : l'analyse par flux résiste au TLS, mais ne voit pas la charge utile. Certaines attaques applicatives peuvent rester difficiles à distinguer.
+* **Choix du seuil de détection** : le seuil Softmax influence directement le compromis faux positifs / faux négatifs et doit être calibré selon la tolérance du SOC.
+* **Dépendance à l'infrastructure cloud** : l'architecture repose sur des services managés (SQS, DynamoDB) et des mécanismes de mirroring. Des contraintes de latence, de coûts ou de disponibilité peuvent affecter la chaîne d'alerte.
+* **Couverture des scénarios d'attaque** : les simulations ne couvrent pas l'ensemble des vecteurs possibles (menaces internes, attaques furtives très lentes, exfiltration).
+
+Ces limites n'invalident pas le projet, mais elles soulignent la nécessité d'une phase de calibration en environnement réel, d'une surveillance continue des performances, et d'une mise à jour régulière du modèle.
+
 ---
 
 ## Conclusion du Chapitre 1
-En somme, ce premier chapitre a mis en lumière les limites incontournables des méthodes de détection traditionnelles par signatures et par règles statiques d'experts. Si ces systèmes restent des piliers de la défense en profondeur grâce à leur rapidité sur les menaces connues, ils s'avèrent incapables de protéger les infrastructures d'entreprise contre les attaques polymorphes, les zero-days, et le trafic chiffré. L'analyse bayésienne a également démontré l'ampleur du problème de la fatigue des alertes dans les SOC, rendant indispensables des approches plus intelligentes et comportementales.
+Ce chapitre a d'abord présenté l'entreprise d'accueil, le périmètre du projet, les besoins fonctionnels et non fonctionnels, les acteurs clés, les technologies mobilisées, l'organisation du travail et le planning prévisionnel. Il a ensuite mis en lumière les limites incontournables des méthodes de détection traditionnelles par signatures et par règles statiques d'experts. Si ces systèmes restent des piliers de la défense en profondeur grâce à leur rapidité sur les menaces connues, ils s'avèrent incapables de protéger les infrastructures d'entreprise contre les attaques polymorphes, les zero-days, et le trafic chiffré. L'analyse bayésienne a également démontré l'ampleur du problème de la fatigue des alertes dans les SOC, rendant indispensables des approches plus intelligentes et comportementales.
 
 L'apprentissage profond par flux statistique offre la réponse la plus robuste en conciliant la résistance au chiffrement et la scalabilité. Notre revue critique de la littérature a cependant identifié des lacunes majeures dans les recherches actuelles, notamment en termes de latence computationnelle et d'absence de validation systémique en production. Forts de ce constat, nous avons validé le besoin d'une architecture légère et performante et formulé nos hypothèses scientifiques clés. Le chapitre suivant détaillera le traitement rigoureux de nos données d'entraînement et la phase cruciale de benchmark expérimental de nos 11 architectures de Deep Learning afin de sélectionner le modèle Attention MLP optimal pour notre infrastructure de production.
 
@@ -718,8 +963,25 @@ Cette stratégie permet de stabiliser les oscillations de gradients à l'approch
 * **Pertes et Pondération de Classes** : Bien que le jeu de données soit équilibré par SMOTE, nous utilisons la perte d'entropie croisée standard multi-classes (`nn.CrossEntropyLoss`). La taille de lot (*Batch Size*) est fixée à 256.
 * **Critère d'Arrêt Précoce (Early Stopping)** : L'entraînement est configuré sur un maximum de 50 époques. Pour contrer tout risque de surapprentissage tardif, nous implémentons un module d'arrêt précoce qui interrompt l'entraînement si la perte de validation ne s'améliore pas pendant 10 époques consécutives. Les poids du modèle ayant enregistré la meilleure perte de validation sont alors restaurés pour l'évaluation de test.
 
-### 2.4.2. Métriques Formelles d'Évaluation multi-classes
+### 2.4.2. Justification des choix d'hyperparamètres
+Les hyperparamètres ont été sélectionnés pour maximiser la stabilité d'apprentissage tout en garantissant une bonne capacité de généralisation, en particulier dans un contexte de classes rares.
+
+* **AdamW et $L_2$** : le découplage de la pénalité de poids limite la dérive des poids tout en conservant une convergence rapide, ce qui est adapté aux architectures hétérogènes testées.
+* **$\eta_0 = 10^{-3}$ + ReduceLROnPlateau** : ce taux initial offre un compromis entre vitesse et stabilité. Le scheduler réduit automatiquement $\eta$ lorsque la perte stagne, évitant un sur-ajustement.
+* **Batch size = 256** : taille suffisante pour stabiliser les gradients sans perdre la variabilité nécessaire au pouvoir de généralisation.
+* **Early Stopping (patience = 10)** : protège contre le surapprentissage et réduit les temps d'entraînement inutiles.
+
+Ces choix maintiennent une comparabilité entre architectures tout en limitant les effets d'instabilité numérique.
+
+### 2.4.3. Méthodologie expérimentale et comparabilité
+Pour garantir l'équité du benchmark, toutes les architectures sont entraînées sur le même jeu de données prétraité et selon le même protocole de partitionnement stratifié. Les étapes de normalisation et d'équilibrage sont appliquées exclusivement sur l'ensemble d'entraînement, puis réutilisées à l'identique pour la validation et le test afin d'éviter toute fuite d'information. La validation sert à piloter l'arrêt précoce et la réduction du taux d'apprentissage, tandis que l'ensemble de test est réservé à l'évaluation finale.
+
+Cette méthodologie assure que les différences observées entre modèles proviennent de l'architecture et non de variations de procédure.
+
+### 2.4.4. Métriques Formelles d'Évaluation multi-classes
 Compte tenu du fort intérêt opérationnel d'un SOC pour les attaques minoritaires, l'utilisation de l'exactitude globale est insuffisante. Nous exploitons des métriques robustes calculées en mode **macro-moyenné** (macro average), attribuant la même importance à chaque classe de trafic quelle que soit sa population.
+
+Le choix du **macro-average** est crucial dans un contexte de classes rares : il évite que les classes majoritaires (trafic BENIGN) dominent la mesure globale. À l'inverse, un micro-average donnerait une vision trop optimiste en pondérant fortement les classes sur-représentées. L'accuracy est conservée à titre indicatif pour la vision globale, mais les décisions de performance reposent sur précision, rappel et F1 macro.
 
 Pour chaque classe $c \in \{1, \dots, 15\}$, nous calculons les Vrais Positifs ($VP_c$), Faux Positifs ($FP_c$), Vrais Négatifs ($VN_c$), et Faux Négatifs ($FN_c$). Les métriques de référence sont formulées comme suit :
 
